@@ -1,10 +1,11 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { useCatch, useLoaderData } from "@remix-run/react";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import { Button } from "~/components/Button";
 import { LinkButton } from "~/components/LinkButton";
-import { PeriodsSelection } from "~/components/PeriodsSelection";
-import { getGroup } from "~/models/group.server";
+
+import { deleteGroup, getGroup } from "~/models/group.server";
 import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -18,21 +19,32 @@ export async function loader({ request, params }: LoaderArgs) {
   return json({ group });
 }
 
+export async function action({ request, params }: ActionArgs) {
+  const userId = await requireUserId(request);
+  invariant(params.groupId, "groupId not found");
+
+  await deleteGroup({ userId, id: params.groupId });
+
+  return redirect("/groups");
+}
+
 export default function GroupDetailsPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.group.name}</h3>
-      <p className="py-6">{data.group.description}</p>
-      <PeriodsSelection isDisabled={true} />
-      <hr className="my-4" />
+      <h3 className="text-2xl font-bold">Delete group {data.group.name}?</h3>
+      <p className="py-6 font-bold">This action cannot be reverse.</p>
 
       <div className="flex gap-2">
-        <LinkButton to={`edit`}>Edit</LinkButton>
-        <LinkButton variant="secondary" to={`delete`}>
-          Delete
+        <LinkButton variant="secondary" to={`../${data.group.id}`}>
+          Cancel
         </LinkButton>
+        <Form method="post">
+          <Button variant="danger" type="submit">
+            Delete
+          </Button>
+        </Form>
       </div>
     </div>
   );

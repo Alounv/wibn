@@ -44,6 +44,23 @@ export function createGroup({
   });
 }
 
+export function updateGroup({
+  id,
+  userId,
+  description,
+  name,
+}: Pick<Group, "description" | "name" | "id"> & {
+  userId: User["id"];
+}) {
+  return prisma.group.updateMany({
+    where: { id, userId },
+    data: {
+      name,
+      description,
+    },
+  });
+}
+
 export function deleteGroup({
   id,
   userId,
