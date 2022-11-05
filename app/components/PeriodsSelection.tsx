@@ -1,10 +1,16 @@
-import { days, periods } from "~/utilities/periods";
+import { days, dayPeriods } from "~/utilities/periods";
 
 interface IPeriodsSelection {
   isDisabled?: boolean;
+  periods: string[];
+  areAllSelected?: boolean;
 }
 
-export const PeriodsSelection = ({ isDisabled = false }: IPeriodsSelection) => {
+export const PeriodsSelection = ({
+  isDisabled = false,
+  areAllSelected = false,
+  periods,
+}: IPeriodsSelection) => {
   return (
     <fieldset className="flex flex-col gap-2">
       {!isDisabled && (
@@ -14,25 +20,34 @@ export const PeriodsSelection = ({ isDisabled = false }: IPeriodsSelection) => {
       )}
 
       <div key="label" className="flex gap-4 uppercase">
-        <div className="mr-2 w-16" />
+        <div className="mr-3 w-16" />
+
         {days.map((day) => {
-          const id = `${day}-label`;
-          return <div key={id}>{day[0]}</div>;
+          const id = `${day.id}-label`;
+          return (
+            <div className="text-sm" key={id}>
+              {day.label[0]}
+            </div>
+          );
         })}
       </div>
-      {periods.map((period) => {
+
+      {dayPeriods.map((dayPeriod) => {
         return (
-          <div key={period} className="flex gap-3">
-            <div className="w-20 capitalize">{period}</div>
+          <div key={dayPeriod.id} className="flex gap-3">
+            <div className="w-20 capitalize">{dayPeriod.label}</div>
+
             {days.map((day) => {
-              const id = `${day}-${period}`;
+              const id = `${day.id}-${dayPeriod.id}`;
               return (
                 <input
                   key={id}
                   type="checkbox"
                   id={id}
+                  value={id}
                   name="periods"
                   disabled={isDisabled}
+                  defaultChecked={areAllSelected || periods.includes(id)}
                 />
               );
             })}

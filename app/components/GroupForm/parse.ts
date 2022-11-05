@@ -4,19 +4,24 @@ export interface GroupErrors {
   name?: string;
   description?: string;
   id?: string;
+  periods?: string;
 }
 
-type GroupFormData = Pick<Group, "name" | "id" | "description">;
+type GroupFormData = Pick<Group, "name" | "id" | "description"> & {
+  periods: string[];
+};
 
 const emptyGroupFormErrors: GroupErrors = {
   name: undefined,
   description: undefined,
   id: undefined,
+  periods: undefined,
 };
 
 type ParseGroupFormDataFn = (args: {
   name: FormDataEntryValue | null;
   description: FormDataEntryValue | null;
+  periods: FormDataEntryValue[];
   id?: FormDataEntryValue | null;
   isIdRequired?: boolean;
 }) => {
@@ -27,6 +32,7 @@ type ParseGroupFormDataFn = (args: {
 export const parseGroupFormData: ParseGroupFormDataFn = ({
   name,
   description,
+  periods,
   id,
   isIdRequired = false,
 }) => {
@@ -47,5 +53,19 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
     return { errors };
   }
 
-  return { data: { name, description, id: (id as string) || "" } };
+  for (const period in periods) {
+    if (typeof period !== "string") {
+      errors.periods = "Periods should be string";
+      return { errors };
+    }
+  }
+
+  return {
+    data: {
+      name,
+      description,
+      periods: periods as string[],
+      id: (id as string) || "",
+    },
+  };
 };

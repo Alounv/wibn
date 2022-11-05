@@ -15,7 +15,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
-  groups    Group[]
+  groups   Group[]
 }
 
 model Password {
@@ -26,10 +26,10 @@ model Password {
 }
 
 model Group {
-  id    String @id @default(cuid())
-  name String
-  description  String
-  periods Period[] @relation(references: [id])
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  periods     Period[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -39,31 +39,8 @@ model Group {
 }
 
 model Period {
-  id    String @id @default(cuid())
-  period  Period @unique
+  id      String  @id @default(cuid())
+  period  String  @unique
+  Group   Group?  @relation(fields: [groupId], references: [id])
+  groupId String?
 }
-
-enum Period {
-  MOM
-  MOA
-  MOE
-  TUM
-  TUA
-  TUE
-  WEM
-  WEA
-  WEE
-  THM
-  THA
-  THE
-  FRM
-  FRA
-  FRE
-  SAM
-  SAA
-  SAE
-  SUM
-  SUA
-  SUE
-}
-

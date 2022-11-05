@@ -19,13 +19,15 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export default function GroupDetailsPage() {
-  const data = useLoaderData<typeof loader>();
+  const {
+    group: { name, description, periods, id },
+  } = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.group.name}</h3>
-      <p className="py-6">{data.group.description}</p>
-      <PeriodsSelection isDisabled={true} />
+      <h3 className="text-2xl font-bold">{name}</h3>
+      <p className="py-6">{description}</p>
+      <PeriodsSelection key={id} isDisabled={true} periods={periods} />
       <hr className="my-4" />
 
       <div className="flex gap-2">

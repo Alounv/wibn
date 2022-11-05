@@ -13,8 +13,9 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const name = formData.get("name");
   const description = formData.get("description");
+  const periods = formData.getAll("periods");
 
-  const { errors, data } = parseGroupFormData({ name, description });
+  const { errors, data } = parseGroupFormData({ name, description, periods });
   if (errors || !data) {
     return json({ errors }, { status: 400 });
   }

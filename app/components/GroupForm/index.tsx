@@ -8,11 +8,13 @@ import type { GroupErrors } from "./parse";
 
 interface IGroupEdition {
   errors?: GroupErrors;
-  group?: Pick<Group, "name" | "description" | "id">;
+  group?: Pick<Group, "name" | "description" | "id"> & {
+    periods: string[];
+  };
 }
 
 export default function GroupEdition({ errors, group }: IGroupEdition) {
-  const { name, description } = group || {};
+  const { name, description, periods = [] } = group || {};
   const nameRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
@@ -46,7 +48,7 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
         error={errors?.description}
       />
 
-      <PeriodsSelection />
+      <PeriodsSelection periods={periods} areAllSelected={!group} />
 
       <input type="hidden" name="id" value={group?.id} />
 

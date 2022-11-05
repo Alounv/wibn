@@ -20,19 +20,24 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
-  const userId = await requireUserId(request);
-
   const formData = await request.formData();
   const name = formData.get("name");
   const description = formData.get("description");
   const id = formData.get("id");
+  const periods = formData.getAll("periods");
+  console.log({ periods });
 
-  const { errors, data } = parseGroupFormData({ name, description, id });
+  const { errors, data } = parseGroupFormData({
+    name,
+    description,
+    id,
+    periods,
+  });
   if (errors || !data) {
     return json({ errors }, { status: 400 });
   }
 
-  await updateGroup({ ...data, userId });
+  await updateGroup(data);
 
   return redirect(`/groups/${id}`);
 }

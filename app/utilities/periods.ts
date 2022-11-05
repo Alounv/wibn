@@ -1,27 +1,31 @@
 export enum P {
-  Morning = "morning",
-  Afternoon = "afternoon",
-  Evening = "evening",
+  Morning = "M",
+  Afternoon = "A",
+  Evening = "E",
 }
 
 export enum D {
-  Monday = "monday",
-  Tuesday = "tuesday",
-  Wednesday = "wednesday",
-  Thursday = "thursday",
-  Friday = "friday",
-  Saturday = "saturday",
-  Sunday = "sunday",
+  Monday = "MO",
+  Tuesday = "TU",
+  Wednesday = "WE",
+  Thursday = "TH",
+  Friday = "FR",
+  Saturday = "SA",
+  Sunday = "SU",
 }
 
-export const days: D[] = [
-  D.Monday,
-  D.Tuesday,
-  D.Wednesday,
-  D.Thursday,
-  D.Friday,
-  D.Saturday,
-  D.Sunday,
+export const days: { label: string; id: D }[] = [
+  { label: "Monday", id: D.Monday },
+  { label: "Tuesday", id: D.Tuesday },
+  { label: "Wednesday", id: D.Wednesday },
+  { label: "Thursday", id: D.Thursday },
+  { label: "Friday", id: D.Friday },
+  { label: "Saturday", id: D.Saturday },
+  { label: "Sunday", id: D.Sunday },
 ];
 
-export const periods: P[] = [P.Morning, P.Afternoon, P.Evening];
+export const dayPeriods: { label: string; id: P }[] = [
+  { label: "Morning", id: P.Morning },
+  { label: "Afternoon", id: P.Afternoon },
+  { label: "Evening", id: P.Evening },
+];
