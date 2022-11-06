@@ -35,7 +35,7 @@ describe("smoke tests", () => {
 
     cy.visitAndCheck("/");
 
-    cy.findByRole("link", { name: /groups/i }).click();
+    cy.findByRole("link", { name: /groups/i }).click({ force: true });
     cy.findByText("No group yet");
 
     cy.findByRole("link", { name: /create new group/i }).click();

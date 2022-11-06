@@ -1,5 +1,6 @@
 import { Authenticator } from "remix-auth";
-import { getUserByEmailOrCreate, User } from "~/models/user.server";
+import type { User } from "~/models/user.server";
+import { getUserByEmailOrCreate } from "~/models/user.server";
 import { sessionStorage } from "~/services/session.server";
 import { GoogleStrategy } from "remix-auth-google";
 

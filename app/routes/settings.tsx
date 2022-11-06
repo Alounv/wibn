@@ -1,6 +1,5 @@
 import { useUser } from "~/utils";
 import { GeneralLayout } from "~/components/GeneralLayout";
-import { NavLink } from "react-router-dom";
 import { Link } from "@remix-run/react";
 
 export default function GroupsPage() {
