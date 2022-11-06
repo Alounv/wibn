@@ -9,11 +9,16 @@ export async function getGroup({
   userId,
 }: Pick<Group, "id"> & {
   userId: User["id"];
-}) {
+}): Promise<
+  | (Pick<Group, "id" | "name" | "description"> & { periods: string[] })
+  | undefined
+> {
   const dbGroup = await prisma.group.findFirst({
     select: { id: true, description: true, name: true, periods: true },
     where: { id, userId },
   });
+
+  if (!dbGroup) return;
 
   return {
     ...dbGroup,

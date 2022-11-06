@@ -51,6 +51,7 @@ describe("smoke tests", () => {
     );
     cy.findByRole("button", { name: /save/i }).click({ force: true });
 
+    cy.findByRole("link", { name: /delete/i }).click({ force: true });
     cy.findByRole("button", { name: /delete/i }).click({ force: true });
 
     cy.findByText("No group yet");
