@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
-import { ReactNode } from "react";
-import { buttonClassNames, ButtonVariant } from "./Button";
+import type { ReactNode } from "react";
+import type { ButtonVariant } from "./Button";
+import { buttonClassNames } from "./Button";
 
 interface ILinkButton {
   to: string;
