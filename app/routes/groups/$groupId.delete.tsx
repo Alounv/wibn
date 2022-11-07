@@ -6,13 +6,13 @@ import { Button } from "~/components/Button";
 import { LinkButton } from "~/components/LinkButton";
 
 import { deleteGroup, getGroup } from "~/models/group.server";
-import { requireUserId } from "~/session.server";
+import { requireUser } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
-  const userId = await requireUserId(request);
+  const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  const group = await getGroup({ userId, id: params.groupId });
+  const group = await getGroup({ userId: user.id, id: params.groupId });
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -20,10 +20,10 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export async function action({ request, params }: ActionArgs) {
-  const userId = await requireUserId(request);
+  const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  await deleteGroup({ userId, id: params.groupId });
+  await deleteGroup({ userId: user.id, id: params.groupId });
 
   return redirect("/groups");
 }

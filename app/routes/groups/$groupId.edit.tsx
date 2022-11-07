@@ -6,13 +6,13 @@ import GroupForm from "~/components/GroupForm";
 import { parseGroupFormData } from "~/components/GroupForm/parse";
 
 import { getGroup, updateGroup } from "~/models/group.server";
-import { requireUserId } from "~/session.server";
+import { requireUser } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
-  const userId = await requireUserId(request);
+  const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  const group = await getGroup({ userId, id: params.groupId });
+  const group = await getGroup({ userId: user.id, id: params.groupId });
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }

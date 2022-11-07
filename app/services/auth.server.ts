@@ -1,9 +1,13 @@
 import { Authenticator } from "remix-auth";
 import type { User } from "~/models/user.server";
+import { getUserByEmail } from "~/models/user.server";
+import { createUser } from "~/models/user.server";
+import { verifyLogin } from "~/models/user.server";
 import { getUserByEmailOrCreate } from "~/models/user.server";
 import { GoogleStrategy } from "remix-auth-google";
 import { sessionStorage } from "../session.server";
 import invariant from "tiny-invariant";
+import { FormStrategy } from "remix-auth-form";
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ORIGIN } = process.env;
 
@@ -18,11 +22,44 @@ const googleStrategy = new GoogleStrategy(
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: `${ORIGIN}/google/callback`,
+    includeGrantedScopes: true,
+    scope: "email https://www.googleapis.com/auth/calendar.freebusy",
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
-    console.log(profile);
     return getUserByEmailOrCreate(profile.emails[0].value);
   }
 );
 
+const formStrategy = new FormStrategy(async ({ form }) => {
+  let email = form.get("email");
+  let password = form.get("password");
+
+  invariant(typeof email === "string", "username must be a string");
+  invariant(email.length > 0, "username must not be empty");
+  invariant(typeof password === "string", "password must be a string");
+  invariant(password.length > 0, "password must not be empty");
+
+  const user = await verifyLogin(email, password);
+  invariant(user, "Invalid email or password");
+  return user;
+});
+
+const formStrategySignin = new FormStrategy(async ({ form }) => {
+  let email = form.get("email");
+  let password = form.get("password");
+
+  invariant(typeof email === "string", "username must be a string");
+  invariant(email.length > 0, "username must not be empty");
+  invariant(typeof password === "string", "password must be a string");
+  invariant(password.length > 0, "password must not be empty");
+
+  const existingUser = await getUserByEmail(email);
+  invariant(!existingUser, "A user already exists with this email");
+
+  const user = await createUser(email, password);
+  return user;
+});
+
 authenticator.use(googleStrategy);
+authenticator.use(formStrategy, "user-pass");
+authenticator.use(formStrategySignin, "user-pass-signin");

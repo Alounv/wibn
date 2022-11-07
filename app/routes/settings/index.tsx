@@ -1,13 +1,10 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
-import { getUserById } from "~/models/user.server";
-import { requireUserId } from "~/session.server";
+import { requireUser } from "~/session.server";
 
 export async function loader({ request }: LoaderArgs) {
-  const userId = await requireUserId(request);
-
-  const user = await getUserById(userId);
+  const user = await requireUser(request);
   if (!user) {
     throw new Response("Not Found", { status: 404 });
   }

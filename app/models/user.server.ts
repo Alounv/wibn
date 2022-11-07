@@ -48,9 +48,7 @@ export async function verifyLogin(
 ) {
   const userWithPassword = await prisma.user.findUnique({
     where: { email },
-    include: {
-      password: true,
-    },
+    include: { password: true },
   });
 
   if (!userWithPassword || !userWithPassword.password) {

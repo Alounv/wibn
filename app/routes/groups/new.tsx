@@ -5,10 +5,10 @@ import GroupForm from "~/components/GroupForm";
 import { parseGroupFormData } from "~/components/GroupForm/parse";
 
 import { createGroup } from "~/models/group.server";
-import { requireUserId } from "~/session.server";
+import { requireUser } from "~/session.server";
 
 export async function action({ request }: ActionArgs) {
-  const userId = await requireUserId(request);
+  const user = await requireUser(request);
 
   const formData = await request.formData();
   const name = formData.get("name");
@@ -20,7 +20,7 @@ export async function action({ request }: ActionArgs) {
     return json({ errors }, { status: 400 });
   }
 
-  const group = await createGroup({ ...data, userId });
+  const group = await createGroup({ ...data, userId: user.id });
 
   return redirect(`/groups/${group.id}`);
 }
