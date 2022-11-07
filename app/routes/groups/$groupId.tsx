@@ -5,7 +5,7 @@ import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/LinkButton";
 import { PeriodsSelection } from "~/components/PeriodsSelection";
 import { getGroup } from "~/models/group.server";
-import { requireUser } from "~/session.server";
+import { requireUser } from "~/services/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);

@@ -2,7 +2,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { requireUser } from "~/session.server";
+import { requireUser } from "~/services/session.server";
 import { getGroupListItems } from "~/models/group.server";
 import { GeneralLayout } from "~/components/GeneralLayout";
 import { GroupsNavbar } from "~/components/GroupsNavbar";

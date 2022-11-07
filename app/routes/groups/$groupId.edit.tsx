@@ -6,7 +6,7 @@ import GroupForm from "~/components/GroupForm";
 import { parseGroupFormData } from "~/components/GroupForm/parse";
 
 import { getGroup, updateGroup } from "~/models/group.server";
-import { requireUser } from "~/session.server";
+import { requireUser } from "~/services/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);

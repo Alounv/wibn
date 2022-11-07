@@ -6,7 +6,7 @@ import { Button } from "~/components/Button";
 import { LinkButton } from "~/components/LinkButton";
 
 import { deleteGroup, getGroup } from "~/models/group.server";
-import { requireUser } from "~/session.server";
+import { requireUser } from "~/services/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);

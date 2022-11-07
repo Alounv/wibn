@@ -5,7 +5,7 @@ import { createUser } from "~/models/user.server";
 import { verifyLogin } from "~/models/user.server";
 import { getUserByEmailOrCreate } from "~/models/user.server";
 import { GoogleStrategy } from "remix-auth-google";
-import { sessionStorage } from "../session.server";
+import { sessionStorage } from "~/services/session.server";
 import invariant from "tiny-invariant";
 import { FormStrategy } from "remix-auth-form";
 

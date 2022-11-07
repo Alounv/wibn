@@ -1,7 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
-import { requireUser } from "~/session.server";
+import { requireUser } from "~/services/session.server";
 
 export async function loader({ request }: LoaderArgs) {
   const user = await requireUser(request);
