@@ -5,14 +5,18 @@ import { getUserToken } from "~/models/user.server";
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ORIGIN } = process.env;
 
-const oauth2Client = new google.auth.OAuth2(
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  `${ORIGIN}/api/auth/google/callback`
-);
-
-const getOauth2Client = async (userId: string): Promise<OAuth2Client> => {
+const getOauth2Client = async (
+  userId: string
+): Promise<OAuth2Client | undefined> => {
   const { refresh, access } = (await getUserToken(userId)) || {};
+
+  if (!refresh || !access) return;
+
+  const oauth2Client = new google.auth.OAuth2(
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    `${ORIGIN}/api/auth/google/callback`
+  );
   oauth2Client.setCredentials({
     refresh_token: refresh,
     access_token: access,
@@ -60,13 +64,16 @@ const getCalendarEvents = async (
 };
 
 const getEventsWithDates = (calendarEvents: calendar_v3.Schema$Event[]) => {
-  return calendarEvents.map((event) => {
-    if (!event.start || !event.end) return null;
-    return {
-      start: getDateFromEventDate(event.start),
-      end: getDateFromEventDate(event.end),
-    };
-  });
+  return calendarEvents
+    .filter((e) => e.start && e.end)
+    .map((e) => {
+      return {
+        start: getDateFromEventDate(
+          e.start as calendar_v3.Schema$EventDateTime
+        ),
+        end: getDateFromEventDate(e.end as calendar_v3.Schema$EventDateTime),
+      };
+    });
 };
 
 interface IGetUserEventsFromAuth {
@@ -76,6 +83,7 @@ interface IGetUserEventsFromAuth {
 }
 
 const getUserEventsFromAuth = async ({
+  // FIXME: this function should be tested
   auth,
   start,
   end,
@@ -97,5 +105,6 @@ interface IGetUserEvents extends Omit<IGetUserEventsFromAuth, "auth"> {
 
 export const getUserEvents = async ({ userId, start, end }: IGetUserEvents) => {
   const auth = await getOauth2Client(userId);
+  if (!auth) return [];
   return getUserEventsFromAuth({ auth, start, end });
 };

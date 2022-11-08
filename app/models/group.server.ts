@@ -1,6 +1,7 @@
 import type { User, Group } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import type { Periods } from "~/utilities/periods";
 
 export type { Group } from "@prisma/client";
 
@@ -10,7 +11,7 @@ export async function getGroup({
 }: Pick<Group, "id"> & {
   userId: User["id"];
 }): Promise<
-  | (Pick<Group, "id" | "name" | "description"> & { periods: string[] })
+  | (Pick<Group, "id" | "name" | "description"> & { periods: Periods[] })
   | undefined
 > {
   const dbGroup = await prisma.group.findFirst({
@@ -22,7 +23,7 @@ export async function getGroup({
 
   return {
     ...dbGroup,
-    periods: dbGroup?.periods.map(({ period }) => period) || [],
+    periods: (dbGroup?.periods.map(({ period }) => period) as Periods[]) || [],
   };
 }
 

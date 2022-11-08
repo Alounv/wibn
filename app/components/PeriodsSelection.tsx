@@ -1,8 +1,9 @@
+import type { Periods } from "~/utilities/periods";
 import { days, dayPeriods } from "~/utilities/periods";
 
 interface IPeriodsSelection {
   isDisabled?: boolean;
-  periods: string[];
+  periods: Periods[];
   areAllSelected?: boolean;
 }
 
@@ -38,7 +39,7 @@ export const PeriodsSelection = ({
             <div className="w-20 capitalize">{dayPeriod.label}</div>
 
             {days.map((day) => {
-              const id = `${day.id}-${dayPeriod.id}`;
+              const id = `${day.id}-${dayPeriod.id}` as Periods;
               return (
                 <input
                   key={id}

@@ -1,6 +1,7 @@
 import { Form } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import type { Group } from "~/models/group.server";
+import type { Periods } from "~/utilities/periods";
 import { Button } from "../Button";
 import { LabelledInput } from "../LabelledInput";
 import { PeriodsSelection } from "../PeriodsSelection";
@@ -9,7 +10,7 @@ import type { GroupErrors } from "./parse";
 interface IGroupEdition {
   errors?: GroupErrors;
   group?: Pick<Group, "name" | "description" | "id"> & {
-    periods: string[];
+    periods: Periods[];
   };
 }
 

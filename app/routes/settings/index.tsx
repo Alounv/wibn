@@ -2,7 +2,8 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/services/session.server";
-import { getUserEvents } from "~/services/calendar.server";
+import { getUserAvailabilities } from "~/services/availabilities.server";
+import { PeriodsSelection } from "~/components/PeriodsSelection";
 
 export async function loader({ request }: LoaderArgs) {
   const user = await requireUser(request);
@@ -10,20 +11,21 @@ export async function loader({ request }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const events = await getUserEvents({
+  const availabilities = await getUserAvailabilities({
+    date: new Date(),
     userId: user.id,
-    start: new Date(),
-    end: new Date(new Date().setDate(new Date().getDate() + 7)),
   });
-
-  return json({ user, events });
+  return json({ availabilities });
 }
 
 export default function GroupDetailsPage() {
-  const { user, events } = useLoaderData<typeof loader>();
+  const { availabilities } = useLoaderData<typeof loader>();
 
-  console.log(user);
-  return <div>{JSON.stringify(events)}</div>;
+  return (
+    <div>
+      <PeriodsSelection periods={availabilities} isDisabled />
+    </div>
+  );
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
