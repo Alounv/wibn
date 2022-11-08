@@ -2,19 +2,28 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/services/session.server";
+import { getUserEvents } from "~/services/calendar.server";
 
 export async function loader({ request }: LoaderArgs) {
   const user = await requireUser(request);
   if (!user) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ user });
+
+  const events = await getUserEvents({
+    userId: user.id,
+    start: new Date(),
+    end: new Date(new Date().setDate(new Date().getDate() + 7)),
+  });
+
+  return json({ user, events });
 }
 
 export default function GroupDetailsPage() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user, events } = useLoaderData<typeof loader>();
 
-  return <div>{user.email}</div>;
+  console.log(user);
+  return <div>{JSON.stringify(events)}</div>;
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {

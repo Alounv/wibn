@@ -24,7 +24,8 @@ const googleStrategy = new GoogleStrategy(
     callbackURL: `${ORIGIN}/google/callback`,
     includeGrantedScopes: true,
     accessType: "offline",
-    scope: "email https://www.googleapis.com/auth/calendar.freebusy",
+    scope:
+      "email https://www.googleapis.com/auth/calendar.freebusy https://www.googleapis.com/auth/calendar.readonly",
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
     return getUserByEmailOrCreate({

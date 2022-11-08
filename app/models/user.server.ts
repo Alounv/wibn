@@ -1,4 +1,4 @@
-import type { Password, User } from "@prisma/client";
+import type { Password, Token, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
@@ -11,6 +11,15 @@ export async function getUserById(id: User["id"]) {
 
 export async function getUserByEmail(email: User["email"]) {
   return prisma.user.findUnique({ where: { email } });
+}
+
+export async function getUserToken(id: User["id"]): Promise<Token | null> {
+  const userWithToken = await prisma.user.findUnique({
+    where: { id },
+    include: { token: true },
+  });
+
+  return userWithToken?.token || null;
 }
 
 interface IGetUserByEmailOrCreate {
