@@ -13,17 +13,54 @@ export async function getUserByEmail(email: User["email"]) {
   return prisma.user.findUnique({ where: { email } });
 }
 
-export async function getUserByEmailOrCreate(
-  email: User["email"]
-): Promise<User> {
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (user) {
+interface IGetUserByEmailOrCreate {
+  email: User["email"];
+  refreshToken?: string;
+  accessToken: string;
+}
+
+export async function getUserByEmailOrCreate({
+  email,
+  refreshToken,
+  accessToken,
+}: IGetUserByEmailOrCreate): Promise<User> {
+  const userWithToken = await prisma.user.findUnique({
+    where: { email },
+    include: { token: true },
+  });
+  if (userWithToken) {
+    const { token, ...user } = userWithToken;
+    const updateOrCreate = {
+      ...(refreshToken && { refresh: refreshToken }),
+      access: accessToken,
+    };
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        token: {
+          ...(token ? { update: updateOrCreate } : { create: updateOrCreate }),
+        },
+      },
+    });
+
     return user;
   }
   return prisma.user.create({ data: { email } });
 }
 
-export async function createUser(email: User["email"], password: string) {
+interface ICreateUser {
+  email: User["email"];
+  password: string;
+  refreshToken?: string;
+  accessToken?: string;
+}
+
+export async function createUser({
+  email,
+  password,
+  refreshToken,
+  accessToken,
+}: ICreateUser) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return prisma.user.create({
@@ -34,6 +71,14 @@ export async function createUser(email: User["email"], password: string) {
           hash: hashedPassword,
         },
       },
+      ...(accessToken && {
+        token: {
+          create: {
+            ...(refreshToken && { refresh: refreshToken }),
+            access: accessToken,
+          },
+        },
+      }),
     },
   });
 }

@@ -15,11 +15,20 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
+  token    Token?
   groups   Group[]
 }
 
 model Password {
   hash String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+}
+
+model Token {
+  refresh String?
+  access  String
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique

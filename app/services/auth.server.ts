@@ -26,7 +26,11 @@ const googleStrategy = new GoogleStrategy(
     scope: "email https://www.googleapis.com/auth/calendar.freebusy",
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
-    return getUserByEmailOrCreate(profile.emails[0].value);
+    return getUserByEmailOrCreate({
+      email: profile.emails[0].value,
+      refreshToken,
+      accessToken,
+    });
   }
 );
 
@@ -56,7 +60,7 @@ const formStrategySignin = new FormStrategy(async ({ form }) => {
   const existingUser = await getUserByEmail(email);
   invariant(!existingUser, "A user already exists with this email");
 
-  const user = await createUser(email, password);
+  const user = await createUser({ email, password });
   return user;
 });
 
