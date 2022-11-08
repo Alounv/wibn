@@ -23,6 +23,7 @@ const googleStrategy = new GoogleStrategy(
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: `${ORIGIN}/google/callback`,
     includeGrantedScopes: true,
+    accessType: "offline",
     scope: "email https://www.googleapis.com/auth/calendar.freebusy",
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
