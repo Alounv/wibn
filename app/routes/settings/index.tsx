@@ -4,6 +4,7 @@ import { useCatch, useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/services/session.server";
 import { getUserAvailabilities } from "~/services/availabilities.server";
 import { PeriodsSelection } from "~/components/PeriodsSelection";
+import { Title } from "~/components/Title";
 
 export async function loader({ request }: LoaderArgs) {
   const user = await requireUser(request);
@@ -23,6 +24,8 @@ export default function GroupDetailsPage() {
 
   return (
     <div>
+      <Title className="mb-4">Calendar based availabilities</Title>
+
       <PeriodsSelection periods={availabilities} isDisabled />
     </div>
   );

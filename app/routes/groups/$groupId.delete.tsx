@@ -4,6 +4,7 @@ import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import { LinkButton } from "~/components/LinkButton";
+import { Title } from "~/components/Title";
 
 import { deleteGroup, getGroup } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
@@ -33,7 +34,7 @@ export default function GroupDetailsPage() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">Delete group {data.group.name}?</h3>
+      <Title>Delete group {data.group.name}?</Title>
       <p className="py-6 font-bold">This action cannot be reverse.</p>
 
       <div className="flex gap-2">

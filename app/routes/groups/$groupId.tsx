@@ -4,6 +4,7 @@ import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/LinkButton";
 import { PeriodsSelection } from "~/components/PeriodsSelection";
+import { Title } from "~/components/Title";
 import { getGroup } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
 
@@ -25,7 +26,7 @@ export default function GroupDetailsPage() {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{name}</h3>
+      <Title>{name}</Title>
       <p className="py-6">{description}</p>
       <PeriodsSelection key={id} isDisabled={true} periods={periods} />
       <hr className="my-4" />
