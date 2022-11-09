@@ -1,5 +1,6 @@
-import { OAuth2Client } from "google-auth-library";
-import { calendar_v3, google } from "googleapis";
+import type { OAuth2Client } from "google-auth-library";
+import type { calendar_v3 } from "googleapis";
+import { google } from "googleapis";
 import invariant from "tiny-invariant";
 import { getUserToken } from "~/models/user.server";
 
@@ -45,8 +46,8 @@ const getDateFromEventDate = (date: calendar_v3.Schema$EventDateTime): Date => {
 const getCalendarEvents = async (
   calendar: calendar_v3.Calendar,
   calendarsIds: string[],
-  start: Date,
-  end: Date
+  start: Readonly<Date>,
+  end: Readonly<Date>
 ): Promise<calendar_v3.Schema$Event[]> => {
   const promises = calendarsIds.map(async (calendarId) => {
     const { data } = await calendar.events.list({
@@ -78,8 +79,8 @@ const getEventsWithDates = (calendarEvents: calendar_v3.Schema$Event[]) => {
 
 interface IGetUserEventsFromAuth {
   auth: OAuth2Client;
-  start: Date;
-  end: Date;
+  start: Readonly<Date>;
+  end: Readonly<Date>;
 }
 
 const getUserEventsFromAuth = async ({

@@ -1,30 +1,53 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useCatch, useLoaderData } from "@remix-run/react";
+import { useCatch, useLoaderData, useParams } from "@remix-run/react";
 import { requireUser } from "~/services/session.server";
-import { getUserAvailabilities } from "~/services/availabilities.server";
+import {
+  getUserAvailabilities,
+  getWeekLimits,
+} from "~/services/availabilities.server";
 import { PeriodsSelection } from "~/components/PeriodsSelection";
 import { Title } from "~/components/Title";
+import invariant from "tiny-invariant";
 
-export async function loader({ request }: LoaderArgs) {
+const locale = "fr-FR";
+
+export async function loader({ request, params }: LoaderArgs) {
+  invariant(params.week, "week not found");
+  invariant(params.year, "year not found");
+  const week = Number(params.week);
+  const year = Number(params.year);
+
   const user = await requireUser(request);
   if (!user) {
     throw new Response("Not Found", { status: 404 });
   }
 
+  const { start, end } = getWeekLimits({ week, year });
+
   const availabilities = await getUserAvailabilities({
-    date: new Date(),
+    start,
+    end,
     userId: user.id,
   });
-  return json({ availabilities });
+
+  return json({
+    availabilities,
+    start: start.toLocaleDateString(locale),
+    end: end.toLocaleDateString(locale),
+  });
 }
 
 export default function GroupDetailsPage() {
-  const { availabilities } = useLoaderData<typeof loader>();
+  const { availabilities, start, end } = useLoaderData<typeof loader>();
 
   return (
     <div>
       <Title className="mb-4">Calendar based availabilities</Title>
+
+      <div>
+        Week: {start} -- {end}
+      </div>
 
       <PeriodsSelection periods={availabilities} isDisabled />
     </div>
