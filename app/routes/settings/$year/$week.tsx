@@ -1,14 +1,12 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useCatch, useLoaderData, useParams } from "@remix-run/react";
+import { useCatch, useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/services/session.server";
-import {
-  getUserAvailabilities,
-  getWeekLimits,
-} from "~/services/availabilities.server";
+import { getUserAvailabilities } from "~/services/availabilities.server";
 import { PeriodsSelection } from "~/components/PeriodsSelection";
 import { Title } from "~/components/Title";
 import invariant from "tiny-invariant";
+import { getWeekLimits } from "~/utilities/dates.server";
 
 const locale = "fr-FR";
 

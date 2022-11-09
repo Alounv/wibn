@@ -1,28 +1,6 @@
+import { getNewDateWithAddedHours } from "~/utilities/dates.server";
 import { Periods } from "../utilities/periods";
 import { getUserEvents } from "./calendar.server";
-
-const getNewDateWithAddedHours = (
-  date: Readonly<Date>,
-  hours: number
-): Date => {
-  const newDate = new Date(date);
-  newDate.setHours(date.getHours() + hours);
-  return newDate;
-};
-
-export const getWeekLimits = ({
-  week,
-  year,
-}: {
-  week: number;
-  year: number;
-}): { start: Date; end: Date } => {
-  const day = 1 + (week - 1) * 7;
-  return {
-    start: new Date(year, 0, day),
-    end: new Date(year, 0, day + 6),
-  };
-};
 
 interface IGetAvailablitiesFromEvents {
   start: Readonly<Date>;
