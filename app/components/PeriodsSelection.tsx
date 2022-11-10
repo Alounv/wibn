@@ -5,20 +5,18 @@ interface IPeriodsSelection {
   isDisabled?: boolean;
   periods: Periods[];
   areAllSelected?: boolean;
+  legend?: string;
 }
 
 export const PeriodsSelection = ({
   isDisabled = false,
   areAllSelected = false,
   periods,
+  legend,
 }: IPeriodsSelection) => {
   return (
     <fieldset className="flex flex-col gap-2">
-      {!isDisabled && (
-        <legend className="mb-2">
-          Select possible periods for the group to meet.
-        </legend>
-      )}
+      {!isDisabled && legend && <legend className="mb-2">{legend}</legend>}
 
       <div key="label" className="flex gap-4 uppercase">
         <div className="mr-3 w-16" />

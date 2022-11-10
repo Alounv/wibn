@@ -107,7 +107,6 @@ export function updateUser({
 }: Pick<User, "id"> & {
   periods: string[];
 }) {
-  console.log("updateUser", id, periods);
   return prisma.user.update({
     where: { id },
     data: {

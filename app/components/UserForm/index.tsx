@@ -1,5 +1,5 @@
 import { Form } from "@remix-run/react";
-import { User } from "~/models/user.server";
+import type { User } from "~/models/user.server";
 import type { Periods } from "~/utilities/periods";
 import { Button } from "../Button";
 import { PeriodsSelection } from "../PeriodsSelection";
@@ -15,7 +15,10 @@ export default function UserEdition({ user }: IUserEdition) {
 
   return (
     <Form method="patch" className="flex w-full flex-col gap-2">
-      <PeriodsSelection periods={periods} />
+      <PeriodsSelection
+        periods={periods}
+        legend="Select periods where you are never available."
+      />
 
       <input type="hidden" name="id" value={user.id} />
 

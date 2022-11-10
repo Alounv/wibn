@@ -28,7 +28,7 @@ export default function GroupDetailsPage() {
     <div>
       <Title>{name}</Title>
       <p className="py-6">{description}</p>
-      <PeriodsSelection key={id} isDisabled={true} periods={periods} />
+      <PeriodsSelection key={id} isDisabled periods={periods} />
       <hr className="my-4" />
 
       <div className="flex gap-2">
