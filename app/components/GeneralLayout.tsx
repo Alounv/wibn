@@ -1,13 +1,16 @@
-import { Link, Form, Outlet } from "@remix-run/react";
+import { Link, Form } from "@remix-run/react";
+import type { ReactNode } from "react";
 
 export const GeneralLayout = ({
   title,
   email,
+  sidebar,
   children,
 }: {
   title: string;
   email: string;
-  children?: React.ReactNode;
+  sidebar?: ReactNode;
+  children?: ReactNode;
 }) => {
   return (
     <div className="flex h-full min-h-screen flex-col">
@@ -27,11 +30,9 @@ export const GeneralLayout = ({
       </header>
 
       <main className="flex h-full bg-white">
-        <div className="h-full w-80 border-r bg-gray-50">{children}</div>
+        <div className="h-full w-80 border-r bg-gray-50">{sidebar}</div>
 
-        <div className="flex-1 p-6">
-          <Outlet />
-        </div>
+        <div className="flex-1 p-6">{children}</div>
       </main>
     </div>
   );

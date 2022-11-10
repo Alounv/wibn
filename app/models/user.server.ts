@@ -1,4 +1,4 @@
-import type { Password, Token, User } from "@prisma/client";
+import type { Password, Period, Token, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
@@ -20,6 +20,15 @@ export async function getUserToken(id: User["id"]): Promise<Token | null> {
   });
 
   return userWithToken?.token || null;
+}
+
+export async function getUserWithPeriods(
+  id: User["id"]
+): Promise<(User & { periods: Period[] }) | null> {
+  return prisma.user.findUnique({
+    where: { id },
+    include: { periods: true },
+  });
 }
 
 interface IGetUserByEmailOrCreate {
@@ -88,6 +97,23 @@ export async function createUser({
           },
         },
       }),
+    },
+  });
+}
+
+export function updateUser({
+  id,
+  periods,
+}: Pick<User, "id"> & {
+  periods: string[];
+}) {
+  console.log("updateUser", id, periods);
+  return prisma.user.update({
+    where: { id },
+    data: {
+      periods: {
+        set: periods.map((p) => ({ period: p })),
+      },
     },
   });
 }

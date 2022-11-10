@@ -10,6 +10,7 @@ generator client {
 model User {
   id    String @id @default(cuid())
   email String @unique
+  periods     Period[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,5 +52,7 @@ model Period {
   id      String  @id @default(cuid())
   period  String  @unique
   Group   Group?  @relation(fields: [groupId], references: [id])
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
   groupId String?
 }

@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 
 import { requireUser } from "~/services/session.server";
 import { getGroupListItems } from "~/models/group.server";
@@ -17,8 +17,12 @@ export default function GroupsPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <GeneralLayout title="Groups" email={data.user.email}>
-      <GroupsNavbar groups={data.groups} />
+    <GeneralLayout
+      title="Groups"
+      email={data.user.email}
+      sidebar={<GroupsNavbar groups={data.groups} />}
+    >
+      <Outlet />
     </GeneralLayout>
   );
 }
