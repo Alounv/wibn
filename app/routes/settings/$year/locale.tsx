@@ -62,6 +62,8 @@ export default function GroupDetailsPage() {
     <div className="flex flex-col items-start gap-4">
       <Title className="mb-4">Calendar based availabilities</Title>
 
+      <Link to={currentLink}>📅 current week</Link>
+
       <div className="font-bold">
         <Link to={previousLink}>⬅️</Link>
         <span className="mx-2">
@@ -69,8 +71,6 @@ export default function GroupDetailsPage() {
         </span>
         <Link to={nextLink}>➡️</Link>
       </div>
-
-      <Link to={currentLink}>📅 Current week</Link>
 
       <PeriodsSelection periods={availabilities} isDisabled />
     </div>

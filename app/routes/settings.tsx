@@ -8,6 +8,7 @@ import { parseUserFormData } from "~/components/UserForm/parse";
 import { getUserWithPeriods, updateUser } from "~/models/user.server";
 import invariant from "tiny-invariant";
 import type { Periods } from "~/utilities/periods";
+import { Title } from "~/components/Title";
 
 export async function loader({ request }: LoaderArgs) {
   const user = await requireUser(request);
@@ -51,8 +52,11 @@ export default function UserPage() {
         </Link>
       }
     >
-      <UserEdition user={{ ...user, periods: periods as Periods[] }} />
-      <Outlet />
+      <div className="flex flex-col gap-8">
+        <Title>Settings</Title>
+        <UserEdition user={{ ...user, periods: periods as Periods[] }} />
+        <Outlet />
+      </div>
     </GeneralLayout>
   );
 }

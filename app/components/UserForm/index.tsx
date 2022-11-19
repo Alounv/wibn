@@ -14,7 +14,7 @@ export default function UserEdition({ user }: IUserEdition) {
   const { periods = [] } = user;
 
   return (
-    <Form method="patch" className="flex w-full flex-col gap-2">
+    <Form method="patch" className="flex w-full flex-col gap-4">
       <PeriodsSelection
         periods={periods}
         legend="Select periods where you are never available."
@@ -22,7 +22,7 @@ export default function UserEdition({ user }: IUserEdition) {
 
       <input type="hidden" name="id" value={user.id} />
 
-      <div className="text-right">
+      <div className="text-left">
         <Button type="submit">Save</Button>
       </div>
     </Form>

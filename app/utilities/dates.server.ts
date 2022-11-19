@@ -37,3 +37,10 @@ export const getWeekLimits = ({
   end.setDate(start.getDate() + 6);
   return { start, end };
 };
+
+export const getCurrentWeek = (): { week: number; year: number } => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const week = getWeek(now);
+  return { week, year };
+};

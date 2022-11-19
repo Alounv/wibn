@@ -38,6 +38,7 @@ export const PeriodsSelection = ({
 
             {days.map((day) => {
               const id = `${day.id}-${dayPeriod.id}` as Periods;
+              const isChecked = areAllSelected || periods.includes(id);
               return (
                 <input
                   key={id}
@@ -46,7 +47,8 @@ export const PeriodsSelection = ({
                   value={id}
                   name="periods"
                   disabled={isDisabled}
-                  defaultChecked={areAllSelected || periods.includes(id)}
+                  defaultChecked={isChecked}
+                  {...(isDisabled && { checked: isChecked })}
                 />
               );
             })}

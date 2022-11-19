@@ -1,9 +1,7 @@
 import { redirect } from "@remix-run/server-runtime";
-import { getWeek } from "~/utilities/dates.server";
+import { getCurrentWeek } from "~/utilities/dates.server";
 
 export async function loader() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const week = getWeek(now);
+  const { year, week } = getCurrentWeek();
   return redirect(`/settings/${year}/${week}`);
 }
