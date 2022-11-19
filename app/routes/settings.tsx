@@ -17,7 +17,7 @@ export async function loader({ request }: LoaderArgs) {
   return json({
     userWithPeriods: {
       ...user,
-      periods: userWithPeriods.periods.map((p) => p.period),
+      periods: userWithPeriods.periods,
     },
   });
 }

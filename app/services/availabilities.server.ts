@@ -1,3 +1,4 @@
+import { getUserWithPeriods } from "~/models/user.server";
 import { getNewDateWithAddedHours } from "~/utilities/dates.server";
 import { Periods } from "../utilities/periods";
 import { getUserEvents } from "./calendar.server";
@@ -10,7 +11,7 @@ interface IGetAvailablitiesFromEvents {
 const getUserAvailabilitiesFromEvents = async ({
   start,
   events,
-}: IGetAvailablitiesFromEvents) => {
+}: IGetAvailablitiesFromEvents): Promise<Periods[]> => {
   return Object.values(Periods).filter((_, i) => {
     const periodStart = getNewDateWithAddedHours(start, i * 8);
     const periodEnd = getNewDateWithAddedHours(periodStart, 8);
@@ -40,5 +41,10 @@ export const getUserAvailabilities = async ({
     end,
   });
 
-  return getUserAvailabilitiesFromEvents({ start, events });
+  const eventsAvailabilities = await getUserAvailabilitiesFromEvents({
+    start,
+    events,
+  });
+  const { periods = [] } = (await getUserWithPeriods(userId)) || {};
+  return eventsAvailabilities.filter((p) => !periods.includes(p));
 };

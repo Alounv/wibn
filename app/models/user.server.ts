@@ -2,6 +2,7 @@ import type { Password, Period, Token, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
+import type { Periods } from "~/utilities/periods";
 
 export type { User } from "@prisma/client";
 
@@ -24,11 +25,15 @@ export async function getUserToken(id: User["id"]): Promise<Token | null> {
 
 export async function getUserWithPeriods(
   id: User["id"]
-): Promise<(User & { periods: Period[] }) | null> {
-  return prisma.user.findUnique({
+): Promise<(User & { periods: Periods[] }) | null> {
+  const user = await prisma.user.findUnique({
     where: { id },
     include: { periods: true },
   });
+  return {
+    ...(user as User),
+    periods: user?.periods.map((p) => p.period as Periods) || [],
+  };
 }
 
 interface IGetUserByEmailOrCreate {
