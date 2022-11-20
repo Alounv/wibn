@@ -106,8 +106,6 @@ export async function updateGroup({
 
   const createUsers = newEmails.map((email) => ({ email }));
 
-  console.log({ setUsers, createUsers });
-
   return prisma.group.update({
     where: { id },
     data: {

@@ -79,6 +79,14 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
             name="emails"
             error={errors?.emails}
           />
+          <strong>
+            ⚠️ It is highly recommended to use GMAIL addresses since this is the
+            only supported calendar.
+          </strong>
+          <span>
+            You can still add non GMAIL users but their calendar will be
+            considered always available except from their fixed free periods.
+          </span>
 
           <LabelledSelect
             label="Admin"

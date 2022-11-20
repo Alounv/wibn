@@ -62,7 +62,6 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
   }
 
   if (!!emailsString && typeof emailsString !== "string") {
-    console.log("HELLLO");
     errors.emails = "Emails should be string";
     return { errors };
   }
@@ -87,7 +86,6 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
   const emails = emailsString?.split("\n").map((email) => email.trim()) || [];
 
   const invalidEmails = emails.filter((e) => !e.match(emailRegex));
-  console.log(invalidEmails);
   if (invalidEmails.length) {
     errors.emails = `Invalid emails: ${invalidEmails.join(", ")}`;
     return { errors };
