@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Periods } from "~/utilities/periods";
 import { days, dayPeriods } from "~/utilities/periods";
 
@@ -5,7 +6,7 @@ interface IPeriodsSelection {
   isDisabled?: boolean;
   periods: Periods[];
   areAllSelected?: boolean;
-  legend?: string;
+  children?: ReactNode;
   variant?: "blue" | "red" | "green";
 }
 
@@ -13,14 +14,14 @@ export const PeriodsSelection = ({
   isDisabled = false,
   areAllSelected = false,
   periods,
-  legend,
+  children,
   variant = "blue",
 }: IPeriodsSelection) => {
   const accent = `accent-${variant}-500`;
   const disabledClass = isDisabled ? "opacity-50 pointer-events-none" : "";
   return (
     <fieldset className="flex flex-col gap-2">
-      {!isDisabled && legend && <legend className="mb-2">{legend}</legend>}
+      {children}
 
       <div key="label" className="flex gap-2 uppercase">
         <div className="mr-3 w-16" />

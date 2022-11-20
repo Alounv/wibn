@@ -111,7 +111,7 @@ export const getUserEvents = async ({ userId, start, end }: IGetUserEvents) => {
   const auth = await getOauth2Client(userId);
   if (!auth)
     return {
-      error: "No auth",
+      error: "no google calendar authentication",
       events: [],
     };
 

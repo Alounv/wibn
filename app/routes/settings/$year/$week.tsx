@@ -18,13 +18,14 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const availabilities = await getUserAvailabilities({
+  const { availabilities, error } = await getUserAvailabilities({
     start,
     end,
     userId: user.id,
   });
 
   return json({
+    error,
     availabilities,
     start: getFormattedDate(start),
     end: getFormattedDate(end),
@@ -35,23 +36,38 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export default function SettingsAvailabilities() {
-  const { availabilities, start, end, previousWeek, nextWeek, currentWeek } =
-    useLoaderData<typeof loader>();
+  const {
+    availabilities,
+    start,
+    end,
+    previousWeek,
+    nextWeek,
+    currentWeek,
+    error,
+  } = useLoaderData<typeof loader>();
 
   const nextLink = `./../../${nextWeek.year}/${nextWeek.week}`;
   const previousLink = `./../../${previousWeek.year}/${previousWeek.week}`;
   const currentLink = `./../../${currentWeek.year}/${currentWeek.week}`;
 
   return (
-    <WeekNavigation
-      nextLink={nextLink}
-      previousLink={previousLink}
-      currentLink={currentLink}
-      start={start}
-      end={end}
-    >
-      <PeriodsSelection periods={availabilities} isDisabled />
-    </WeekNavigation>
+    <>
+      {error && (
+        <div className="self-start border border-red-600 bg-red-50 py-1 px-3">
+          ⚠️ An error occured: <strong>{error}</strong>
+        </div>
+      )}
+
+      <WeekNavigation
+        nextLink={nextLink}
+        previousLink={previousLink}
+        currentLink={currentLink}
+        start={start}
+        end={end}
+      >
+        <PeriodsSelection periods={availabilities} isDisabled />
+      </WeekNavigation>
+    </>
   );
 }
 

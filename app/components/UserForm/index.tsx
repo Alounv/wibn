@@ -15,11 +15,11 @@ export default function UserEdition({ user }: IUserEdition) {
 
   return (
     <Form method="patch" className="flex w-full flex-col gap-4">
-      <PeriodsSelection
-        periods={periods}
-        legend="Select periods where you are never available."
-        variant="red"
-      />
+      <PeriodsSelection periods={periods} variant="red">
+        <span>
+          Select times your are <strong>never</strong> available.
+        </span>
+      </PeriodsSelection>
 
       <input type="hidden" name="id" value={user.id} />
 

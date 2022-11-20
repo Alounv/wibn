@@ -64,9 +64,10 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
       <PeriodsSelection
         periods={periods}
         areAllSelected={!group}
-        legend="Select possible periods for the group to meet."
         variant="green"
-      />
+      >
+        Select possible times for the group to meet.
+      </PeriodsSelection>
 
       <input type="hidden" name="id" value={group?.id} />
 
