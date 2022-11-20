@@ -15,7 +15,9 @@ type GetGroupOutput = Promise<
   | undefined
 >;
 
-async function getGroupByQuery({ query }: any): GetGroupOutput {
+async function getGroupByQuery(
+  query: Partial<Group> & { users?: { some: any } }
+): GetGroupOutput {
   const dbGroup = await prisma.group.findFirst({
     select: {
       id: true,
@@ -42,7 +44,7 @@ export async function getGroup({
 }: Pick<Group, "id"> & {
   userId: User["id"];
 }): GetGroupOutput {
-  return getGroupByQuery({ id, users: { some: { userId } } });
+  return getGroupByQuery({ id, users: { some: { id: userId } } });
 }
 
 export async function getAdministeredGroup({
