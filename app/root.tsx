@@ -33,6 +33,10 @@ export default function App() {
       <head>
         <Meta />
         <Links />
+        <link
+          rel="icon"
+          href="https://emojiguide.com/wp-content/uploads/platform/apple/42960.png"
+        />
       </head>
       <body className="h-full">
         <Outlet />

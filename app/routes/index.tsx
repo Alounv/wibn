@@ -32,17 +32,21 @@ export default function Index() {
                   </Link>
                 ) : (
                   <div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
+                    <Form
+                      action="./google/auth"
+                      method="post"
+                      className="flex items-center justify-center"
+                    >
+                      <button className="w-full rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-sky-700 shadow-sm hover:bg-sky-50 sm:px-8">
+                        Login with Google
+                      </button>
+                    </Form>
                     <Link
                       to="/login"
                       className="flex items-center justify-center rounded-md bg-sky-600 px-4 py-3 font-medium text-white hover:bg-sky-600"
                     >
                       Login with Email
                     </Link>
-                    <Form action="./google/auth" method="post">
-                      <button className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-sky-700 shadow-sm hover:bg-sky-50 sm:px-8">
-                        Login with Google
-                      </button>
-                    </Form>
                   </div>
                 )}
               </div>
