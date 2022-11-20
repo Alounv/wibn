@@ -12,24 +12,34 @@ export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  const group = await getGroup({ userId: user.id, id: params.groupId });
+  const group = await getGroup({ adminId: user.id, id: params.groupId });
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ group });
+  return json({ group, isAdmin: user.id === group.admin.id });
 }
 
 export default function GroupDetailsPage() {
   const {
-    group: { name, description, periods, id },
+    group: { name, description, periods, id, users, admin },
+    isAdmin,
   } = useLoaderData<typeof loader>();
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <Title>{name}</Title>
-      <p className="py-6">{description}</p>
+      <p>{description}</p>
       <PeriodsSelection key={id} isDisabled periods={periods} />
-      <hr className="my-4" />
+
+      <p>
+        Adminstrator: <strong>{admin.email}</strong>
+      </p>
+
+      <ul>
+        {users.map(({ id, email }) => (
+          <li key={id}>{email}</li>
+        ))}
+      </ul>
 
       <div className="flex gap-2">
         <LinkButton to={`edit`}>Edit</LinkButton>

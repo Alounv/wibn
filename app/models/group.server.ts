@@ -7,16 +7,25 @@ export type { Group } from "@prisma/client";
 
 export async function getGroup({
   id,
-  userId,
+  adminId,
 }: Pick<Group, "id"> & {
-  userId: User["id"];
+  adminId: User["id"];
 }): Promise<
-  | (Pick<Group, "id" | "name" | "description"> & { periods: Periods[] })
+  | (Pick<Group, "id" | "name" | "description"> & {
+      periods: Periods[];
+      admin: User;
+    })
   | undefined
 > {
   const dbGroup = await prisma.group.findFirst({
-    select: { id: true, description: true, name: true, periods: true },
-    where: { id, userId },
+    select: {
+      id: true,
+      description: true,
+      name: true,
+      periods: true,
+      admin: true,
+    },
+    where: { id, adminId },
   });
 
   if (!dbGroup) return;
@@ -27,9 +36,9 @@ export async function getGroup({
   };
 }
 
-export function getGroupListItems({ userId }: { userId: User["id"] }) {
+export function getGroupListItems({ adminId }: { adminId: User["id"] }) {
   return prisma.group.findMany({
-    where: { userId },
+    where: { adminId },
     select: { id: true, name: true },
     orderBy: { updatedAt: "desc" },
   });
@@ -38,10 +47,10 @@ export function getGroupListItems({ userId }: { userId: User["id"] }) {
 export function createGroup({
   description,
   name,
-  userId,
+  adminId,
   periods,
 }: Pick<Group, "description" | "name"> & {
-  userId: User["id"];
+  adminId: User["id"];
   periods: string[];
 }) {
   return prisma.group.create({
@@ -51,9 +60,9 @@ export function createGroup({
       periods: {
         connect: periods.map((p) => ({ period: p })),
       },
-      user: {
+      admin: {
         connect: {
-          id: userId,
+          id: adminId,
         },
       },
     },
@@ -82,9 +91,9 @@ export function updateGroup({
 
 export function deleteGroup({
   id,
-  userId,
-}: Pick<Group, "id"> & { userId: User["id"] }) {
+  adminId,
+}: Pick<Group, "id"> & { adminId: User["id"] }) {
   return prisma.group.deleteMany({
-    where: { id, userId },
+    where: { id, adminId },
   });
 }

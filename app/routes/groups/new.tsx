@@ -20,7 +20,7 @@ export async function action({ request }: ActionArgs) {
     return json({ errors }, { status: 400 });
   }
 
-  const group = await createGroup({ ...data, userId: user.id });
+  const group = await createGroup({ ...data, adminId: user.id });
 
   return redirect(`/groups/${group.id}`);
 }

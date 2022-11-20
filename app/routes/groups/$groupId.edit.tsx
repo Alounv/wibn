@@ -12,7 +12,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  const group = await getGroup({ userId: user.id, id: params.groupId });
+  const group = await getGroup({ adminId: user.id, id: params.groupId });
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }

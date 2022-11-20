@@ -9,7 +9,7 @@ import { GroupsNavbar } from "~/components/GroupsNavbar";
 
 export async function loader({ request }: LoaderArgs) {
   const user = await requireUser(request);
-  const groups = await getGroupListItems({ userId: user.id });
+  const groups = await getGroupListItems({ adminId: user.id });
   return json({ groups, user });
 }
 

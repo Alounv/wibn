@@ -13,7 +13,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  const group = await getGroup({ userId: user.id, id: params.groupId });
+  const group = await getGroup({ adminId: user.id, id: params.groupId });
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -24,7 +24,7 @@ export async function action({ request, params }: ActionArgs) {
   const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  await deleteGroup({ userId: user.id, id: params.groupId });
+  await deleteGroup({ adminId: user.id, id: params.groupId });
 
   return redirect("/groups");
 }

@@ -8,10 +8,10 @@ export const GroupsNavbar = ({
   return (
     <>
       <Link to="../settings" className="block p-4 text-xl text-blue-500">
-        User settings
+        ⚙️ settings
       </Link>
       <Link to="new" className="block p-4 text-xl text-blue-500">
-        Create new group
+        ➕ new group
       </Link>
 
       <hr />
@@ -28,7 +28,7 @@ export const GroupsNavbar = ({
                 }
                 to={group.id}
               >
-                📝 {group.name}
+                👥 {group.name}
               </NavLink>
             </li>
           ))}

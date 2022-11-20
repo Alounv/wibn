@@ -28,7 +28,7 @@ async function seed() {
     data: {
       name: "My first group",
       description: "Hello, world!",
-      userId: user.id,
+      adminId: user.id,
     },
   });
 
@@ -36,7 +36,7 @@ async function seed() {
     data: {
       name: "My second group",
       description: "Hello, world!",
-      userId: user.id,
+      adminId: user.id,
     },
   });
 

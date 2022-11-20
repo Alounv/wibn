@@ -32,7 +32,7 @@ export const GeneralLayout = ({
       <main className="flex h-full bg-white">
         <div className="h-full w-80 border-r bg-gray-50">{sidebar}</div>
 
-        <div className="flex-1 p-6">{children}</div>
+        <div className="max-w-lg flex-1 p-6">{children}</div>
       </main>
     </div>
   );
