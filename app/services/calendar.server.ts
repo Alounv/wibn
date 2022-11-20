@@ -109,6 +109,14 @@ interface IGetUserEvents extends Omit<IGetUserEventsFromAuth, "auth"> {
 
 export const getUserEvents = async ({ userId, start, end }: IGetUserEvents) => {
   const auth = await getOauth2Client(userId);
-  if (!auth) return [];
-  return getUserEventsFromAuth({ auth, start, end });
+  if (!auth)
+    return {
+      error: "No auth",
+      events: [],
+    };
+
+  return {
+    error: "",
+    events: await getUserEventsFromAuth({ auth, start, end }),
+  };
 };

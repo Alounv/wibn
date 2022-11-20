@@ -35,8 +35,11 @@ export const getUserAvailabilities = async ({
   userId,
   start,
   end,
-}: IGetUserAvailablities): Promise<Periods[]> => {
-  const events = await getUserEvents({
+}: IGetUserAvailablities): Promise<{
+  availabilities: Periods[];
+  error: string;
+}> => {
+  const { events, error } = await getUserEvents({
     userId,
     start,
     end,
@@ -47,7 +50,10 @@ export const getUserAvailabilities = async ({
     events,
   });
   const { periods = [] } = (await getUserWithPeriods(userId)) || {};
-  return eventsAvailabilities.filter((p) => !periods.includes(p));
+  return {
+    availabilities: eventsAvailabilities.filter((p) => !periods.includes(p)),
+    error,
+  };
 };
 
 interface IGetGroupAvailablities {
@@ -62,7 +68,7 @@ export const getGroupUsersAvailabilities = async ({
   start,
   end,
   possibilities,
-}: IGetGroupAvailablities): Promise<Record<Periods, string[]>> => {
+}: IGetGroupAvailablities) => {
   const usersAvailabilities = await Promise.all(
     users.map(async ({ id: userId }) =>
       getUserAvailabilities({ userId, start, end })
@@ -70,25 +76,26 @@ export const getGroupUsersAvailabilities = async ({
   );
 
   const usersWithAvailabilities = usersAvailabilities.map(
-    (availabilities, i) => ({
+    ({ availabilities, error }, i) => ({
       email: users[i].email,
       availabilities,
+      error,
     })
   );
 
   const results = possibilities.reduce((acc, slot) => {
     const availableUsers = usersWithAvailabilities.reduce(
-      (acc, { email, availabilities }) => {
+      (acc, { email, availabilities, error }) => {
         if (availabilities.includes(slot)) {
-          acc.push(email);
+          acc.push({ email, error });
         }
         return acc;
       },
-      [] as string[]
+      [] as { email: string; error: string }[]
     );
 
     return { ...acc, [slot]: availableUsers };
-  }, {} as Record<Periods, string[]>);
+  }, {} as Record<Periods, { email: string; error: string }[]>);
 
   return results;
 };

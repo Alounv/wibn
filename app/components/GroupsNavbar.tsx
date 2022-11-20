@@ -28,7 +28,7 @@ export const GroupsNavbar = ({
                 }
                 to={group.id}
               >
-                👥 {group.name}
+                {group.name}
               </NavLink>
             </li>
           ))}

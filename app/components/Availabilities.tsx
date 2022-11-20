@@ -1,8 +1,9 @@
+import { useState } from "react";
 import type { Periods } from "~/utilities/periods";
 import { days, dayPeriods } from "~/utilities/periods";
 
 interface IAvailabilities {
-  availabilities: Record<Periods, string[]>;
+  availabilities: Record<Periods, { email: string; error: string }[]>;
   possibilities: Periods[];
 }
 
@@ -10,8 +11,20 @@ export const Availabilities = ({
   availabilities,
   possibilities,
 }: IAvailabilities) => {
+  const [areDisconnectedVisible, setAreDisconnectedVisible] = useState(false);
   return (
     <div className="flex flex-col gap-2">
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="connected"
+          name="connected"
+          value={areDisconnectedVisible.toString()}
+          onChange={() => setAreDisconnectedVisible(!areDisconnectedVisible)}
+        />
+        <span>Show members without google agenda</span>
+      </label>
+
       <div key="label" className="flex gap-3 uppercase">
         <div className="mr-3 w-16" />
 
@@ -37,8 +50,14 @@ export const Availabilities = ({
                 return <div key={id} className="w-8 bg-gray-200 text-center" />;
               }
 
-              const count = availabilities[id]?.length || 0;
-              const tooltip = availabilities[id].join("\n") || "Nobody";
+              const dayAvailabilities = availabilities[id] || [];
+              const usedAvailabilities = areDisconnectedVisible
+                ? dayAvailabilities
+                : dayAvailabilities.filter((a) => !a.error);
+
+              const count = usedAvailabilities.length;
+              const emails = usedAvailabilities.map(({ email }) => email) || [];
+              const tooltip = emails.join("\n") || "Nobody";
               const value = Math.min(Math.max(50, count * 100), 900);
               return (
                 <div
