@@ -18,6 +18,7 @@ export default function UserEdition({ user }: IUserEdition) {
       <PeriodsSelection
         periods={periods}
         legend="Select periods where you are never available."
+        variant="red"
       />
 
       <input type="hidden" name="id" value={user.id} />

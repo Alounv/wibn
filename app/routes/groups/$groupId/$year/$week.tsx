@@ -22,7 +22,7 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const availabilities = await getGroupAvailabilities({
+  const { availabilities, possibilities } = await getGroupAvailabilities({
     start,
     end,
     groupId,
@@ -30,6 +30,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   return json({
     availabilities,
+    possibilities,
     start: getFormattedDate(start),
     end: getFormattedDate(end),
     previousWeek,
@@ -42,6 +43,7 @@ export async function loader({ request, params }: LoaderArgs) {
 export default function GroupDetailsPage() {
   const {
     availabilities,
+    possibilities,
     start,
     end,
     previousWeek,
@@ -63,7 +65,10 @@ export default function GroupDetailsPage() {
         start={start}
         end={end}
       >
-        <Availabilities availabilities={availabilities} />
+        <Availabilities
+          availabilities={availabilities}
+          possibilities={possibilities}
+        />
       </WeekNavigation>
 
       <LinkButton to={`/groups/${groupId}`}>Back to Group</LinkButton>

@@ -158,10 +158,15 @@ export const getGroupAvailabilities = async ({
 }) => {
   const group = await getGroupUsersAndSlots(groupId);
 
-  return getGroupUsersAvailabilities({
+  const availabilities = await getGroupUsersAvailabilities({
     users: group.users,
     possibilities: group.periods as Periods[],
     start,
     end,
   });
+
+  return {
+    availabilities,
+    possibilities: group.periods as Periods[],
+  };
 };

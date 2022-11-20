@@ -1,10 +1,15 @@
-import { Periods, days, dayPeriods } from "~/utilities/periods";
+import type { Periods } from "~/utilities/periods";
+import { days, dayPeriods } from "~/utilities/periods";
 
 interface IAvailabilities {
   availabilities: Record<Periods, string[]>;
+  possibilities: Periods[];
 }
 
-export const Availabilities = ({ availabilities }: IAvailabilities) => {
+export const Availabilities = ({
+  availabilities,
+  possibilities,
+}: IAvailabilities) => {
   return (
     <div className="flex flex-col gap-2">
       <div key="label" className="flex gap-3 uppercase">
@@ -13,7 +18,7 @@ export const Availabilities = ({ availabilities }: IAvailabilities) => {
         {days.map((day) => {
           const id = `${day.id}-label`;
           return (
-            <div className="w-8 text-sm" key={id}>
+            <div className="w-8 text-center" key={id}>
               {day.label[0]}
             </div>
           );
@@ -27,10 +32,15 @@ export const Availabilities = ({ availabilities }: IAvailabilities) => {
 
             {days.map((day) => {
               const id = `${day.id}-${dayPeriod.id}` as Periods;
-              const count = availabilities[id].length;
-              const value = Math.min(count * 100, 900);
+
+              if (!possibilities.includes(id)) {
+                return <div key={id} className="w-8 bg-gray-200 text-center" />;
+              }
+
+              const count = availabilities[id]?.length || 0;
+              const value = Math.min(Math.max(50, count * 100), 900);
               return (
-                <div className={`w-8 bg-red-${value} text-center`} key={id}>
+                <div className={`w-8 bg-green-${value} text-center`} key={id}>
                   {count}
                 </div>
               );
@@ -41,15 +51,16 @@ export const Availabilities = ({ availabilities }: IAvailabilities) => {
 
       <div className="none">
         {/* so tailwind had thoes colors loaded */}
-        <div className="bg-red-100" />
-        <div className="bg-red-200" />
-        <div className="bg-red-300" />
-        <div className="bg-red-400" />
-        <div className="bg-red-500" />
-        <div className="bg-red-600" />
-        <div className="bg-red-700" />
-        <div className="bg-red-800" />
-        <div className="bg-red-900" />
+        <div className="bg-green-50" />
+        <div className="bg-green-100" />
+        <div className="bg-green-200" />
+        <div className="bg-green-300" />
+        <div className="bg-green-400" />
+        <div className="bg-green-500" />
+        <div className="bg-green-600" />
+        <div className="bg-green-700" />
+        <div className="bg-green-800" />
+        <div className="bg-green-900" />
       </div>
     </div>
   );

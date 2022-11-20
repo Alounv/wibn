@@ -6,6 +6,7 @@ interface IPeriodsSelection {
   periods: Periods[];
   areAllSelected?: boolean;
   legend?: string;
+  variant?: "classic" | "red";
 }
 
 export const PeriodsSelection = ({
@@ -13,18 +14,22 @@ export const PeriodsSelection = ({
   areAllSelected = false,
   periods,
   legend,
+  variant = "classic",
 }: IPeriodsSelection) => {
+  let color = variant === "classic" ? "blue" : "red";
+  const accent = `accent-${color}-500`;
+  const disabledClass = isDisabled ? "opacity-50 pointer-events-none" : "";
   return (
     <fieldset className="flex flex-col gap-2">
       {!isDisabled && legend && <legend className="mb-2">{legend}</legend>}
 
-      <div key="label" className="flex gap-4 uppercase">
+      <div key="label" className="flex gap-2 uppercase">
         <div className="mr-3 w-16" />
 
         {days.map((day) => {
           const id = `${day.id}-label`;
           return (
-            <div className="text-sm" key={id}>
+            <div className="w-8 text-center" key={id}>
               {day.label[0]}
             </div>
           );
@@ -33,7 +38,7 @@ export const PeriodsSelection = ({
 
       {dayPeriods.map((dayPeriod) => {
         return (
-          <div key={dayPeriod.id} className="flex gap-3">
+          <div key={dayPeriod.id} className="flex gap-2">
             <div className="w-20 capitalize">{dayPeriod.label}</div>
 
             {days.map((day) => {
@@ -41,12 +46,12 @@ export const PeriodsSelection = ({
               const isChecked = areAllSelected || periods.includes(id);
               return (
                 <input
+                  className={`w-8 ${accent} ${disabledClass}`}
                   key={id}
                   type="checkbox"
                   id={id}
                   value={id}
                   name="periods"
-                  disabled={isDisabled}
                   defaultChecked={isChecked}
                   {...(isDisabled && { checked: isChecked })}
                 />
