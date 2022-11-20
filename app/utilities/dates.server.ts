@@ -1,3 +1,5 @@
+import invariant from "tiny-invariant";
+
 // https://weeknumber.com/how-to/javascript
 export const getWeek = (date: Date) => {
   date.setHours(0, 0, 0, 0);
@@ -38,9 +40,51 @@ export const getWeekLimits = ({
   return { start, end };
 };
 
-export const getCurrentWeek = (): { week: number; year: number } => {
+const getCurrentWeek = (): { week: number; year: number } => {
   const now = new Date();
   const year = now.getFullYear();
   const week = getWeek(now);
   return { week, year };
+};
+
+const locale = "fr-FR";
+
+const format: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+};
+
+export const getFormattedDate = (date: Date): string =>
+  date.toLocaleDateString(locale, format);
+
+export const getWeeksData = ({
+  year: stringYear,
+  week: stringWeek,
+}: {
+  year: string | undefined;
+  week: string | undefined;
+}) => {
+  invariant(stringWeek, "week not found");
+  invariant(stringYear, "year not found");
+
+  const week = Number(stringWeek);
+  const year = Number(stringYear);
+
+  const { start, end } = getWeekLimits({ week, year });
+
+  const previousWeek =
+    week === 1 ? { week: 52, year: year - 1 } : { week: week - 1, year };
+
+  const nextWeek =
+    week === 52 ? { week: 1, year: year + 1 } : { week: week + 1, year };
+
+  const currentWeek = getCurrentWeek();
+  return {
+    start,
+    end,
+    previousWeek,
+    nextWeek,
+    currentWeek,
+  };
 };

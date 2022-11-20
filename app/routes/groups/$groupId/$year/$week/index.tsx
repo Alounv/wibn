@@ -1,11 +1,11 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
-import { requireUser } from "~/services/session.server";
-import { getUserAvailabilities } from "~/services/availabilities.server";
-import { PeriodsSelection } from "~/components/PeriodsSelection";
-import { getFormattedDate, getWeeksData } from "~/utilities/dates.server";
 import { WeekNavigation } from "~/components/PeriodsNavigation";
+import { PeriodsSelection } from "~/components/PeriodsSelection";
+import { getUserAvailabilities } from "~/services/availabilities.server";
+import { requireUser } from "~/services/session.server";
+import { getFormattedDate, getWeeksData } from "~/utilities/dates.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const { start, end, previousWeek, nextWeek, currentWeek } = getWeeksData({
