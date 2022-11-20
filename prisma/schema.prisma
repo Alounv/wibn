@@ -8,16 +8,17 @@ generator client {
 }
 
 model User {
-  id    String @id @default(cuid())
-  email String @unique
-  periods     Period[]
+  id      String   @id @default(cuid())
+  email   String   @unique
+  periods Period[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password Password?
-  token    Token?
-  groups   Group[]
+  password    Password?
+  token       Token?
+  groups      UsersOnGroups[]
+  adminGroups Group[]
 }
 
 model Password {
@@ -46,6 +47,18 @@ model Group {
 
   admin   User   @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   adminId String
+
+  users UsersOnGroups[]
+}
+
+model UsersOnGroups {
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId     String
+  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  groupId    String
+  assignedAt DateTime @default(now())
+
+  @@id([userId, groupId])
 }
 
 model Period {

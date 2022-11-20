@@ -14,6 +14,7 @@ export async function getGroup({
   | (Pick<Group, "id" | "name" | "description"> & {
       periods: Periods[];
       admin: User;
+      users: User[];
     })
   | undefined
 > {
@@ -24,6 +25,11 @@ export async function getGroup({
       name: true,
       periods: true,
       admin: true,
+      users: {
+        select: {
+          user: true,
+        },
+      },
     },
     where: { id, adminId },
   });
@@ -32,6 +38,7 @@ export async function getGroup({
 
   return {
     ...dbGroup,
+    users: dbGroup.users.map(({ user }) => user),
     periods: (dbGroup?.periods.map(({ period }) => period) as Periods[]) || [],
   };
 }
