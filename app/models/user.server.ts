@@ -51,12 +51,12 @@ export async function getUserByEmailOrCreate({
     where: { email },
     include: { token: true },
   });
+  const updateOrCreate = {
+    ...(refreshToken && { refresh: refreshToken }),
+    access: accessToken,
+  };
   if (userWithToken) {
     const { token, ...user } = userWithToken;
-    const updateOrCreate = {
-      ...(refreshToken && { refresh: refreshToken }),
-      access: accessToken,
-    };
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -68,7 +68,14 @@ export async function getUserByEmailOrCreate({
 
     return user;
   }
-  return prisma.user.create({ data: { email } });
+  return prisma.user.create({
+    data: {
+      email,
+      token: {
+        create: updateOrCreate,
+      },
+    },
+  });
 }
 
 interface ICreateUser {

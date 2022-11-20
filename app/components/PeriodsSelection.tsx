@@ -53,6 +53,7 @@ export const PeriodsSelection = ({
                   name="periods"
                   defaultChecked={isChecked}
                   {...(isDisabled && { checked: isChecked })}
+                  {...(isDisabled && { readOnly: true })}
                 />
               );
             })}
