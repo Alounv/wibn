@@ -65,15 +65,12 @@ export async function getUserByEmailOrCreate({
         },
       },
     });
-
     return user;
   }
   return prisma.user.create({
     data: {
       email,
-      token: {
-        create: updateOrCreate,
-      },
+      token: { create: updateOrCreate },
     },
   });
 }

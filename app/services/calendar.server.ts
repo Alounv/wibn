@@ -11,8 +11,8 @@ const getOauth2Client = async (
 ): Promise<OAuth2Client | undefined> => {
   const { refresh, access } = (await getUserToken(userId)) || {};
 
-  if (!refresh || !access) {
-    console.error("No refresh or access token for user", userId);
+  if (!refresh && !access) {
+    console.error("===> No refresh or access token for user", userId);
     return;
   }
 
