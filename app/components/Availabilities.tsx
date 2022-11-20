@@ -38,9 +38,14 @@ export const Availabilities = ({
               }
 
               const count = availabilities[id]?.length || 0;
+              const tooltip = availabilities[id].join("\n") || "Nobody";
               const value = Math.min(Math.max(50, count * 100), 900);
               return (
-                <div className={`w-8 bg-green-${value} text-center`} key={id}>
+                <div
+                  title={tooltip}
+                  className={`w-8 bg-green-${value} cursor-default text-center`}
+                  key={id}
+                >
                   {count}
                 </div>
               );

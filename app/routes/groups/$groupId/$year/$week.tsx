@@ -3,7 +3,6 @@ import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Availabilities } from "~/components/Availabilities";
-import { LinkButton } from "~/components/LinkButton";
 import { WeekNavigation } from "~/components/PeriodsNavigation";
 import { getGroupAvailabilities } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
@@ -49,30 +48,25 @@ export default function GroupDetailsPage() {
     previousWeek,
     nextWeek,
     currentWeek,
-    groupId,
   } = useLoaderData<typeof loader>();
 
-  const nextLink = `/settings/${nextWeek.year}/${nextWeek.week}`;
-  const previousLink = `/settings/${previousWeek.year}/${previousWeek.week}`;
-  const currentLink = `/settings/${currentWeek.year}/${currentWeek.week}`;
+  const nextLink = `./../../${nextWeek.year}/${nextWeek.week}`;
+  const previousLink = `./../../${previousWeek.year}/${previousWeek.week}`;
+  const currentLink = `./../../${currentWeek.year}/${currentWeek.week}`;
 
   return (
-    <div className="flex flex-col items-start gap-8">
-      <WeekNavigation
-        nextLink={nextLink}
-        previousLink={previousLink}
-        currentLink={currentLink}
-        start={start}
-        end={end}
-      >
-        <Availabilities
-          availabilities={availabilities}
-          possibilities={possibilities}
-        />
-      </WeekNavigation>
-
-      <LinkButton to={`/groups/${groupId}`}>Back to Group</LinkButton>
-    </div>
+    <WeekNavigation
+      nextLink={nextLink}
+      previousLink={previousLink}
+      currentLink={currentLink}
+      start={start}
+      end={end}
+    >
+      <Availabilities
+        availabilities={availabilities}
+        possibilities={possibilities}
+      />
+    </WeekNavigation>
   );
 }
 

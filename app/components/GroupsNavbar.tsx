@@ -8,7 +8,7 @@ export const GroupsNavbar = ({
   return (
     <>
       <Link to="../settings" className="block p-4 text-xl text-blue-500">
-        ⚙️ settings
+        ⚙️ user settings
       </Link>
       <Link to="new" className="block p-4 text-xl text-blue-500">
         ➕ new group

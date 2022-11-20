@@ -6,7 +6,7 @@ interface IPeriodsSelection {
   periods: Periods[];
   areAllSelected?: boolean;
   legend?: string;
-  variant?: "classic" | "red";
+  variant?: "blue" | "red" | "green";
 }
 
 export const PeriodsSelection = ({
@@ -14,10 +14,9 @@ export const PeriodsSelection = ({
   areAllSelected = false,
   periods,
   legend,
-  variant = "classic",
+  variant = "blue",
 }: IPeriodsSelection) => {
-  let color = variant === "classic" ? "blue" : "red";
-  const accent = `accent-${color}-500`;
+  const accent = `accent-${variant}-500`;
   const disabledClass = isDisabled ? "opacity-50 pointer-events-none" : "";
   return (
     <fieldset className="flex flex-col gap-2">
@@ -60,6 +59,9 @@ export const PeriodsSelection = ({
           </div>
         );
       })}
+
+      <div className="none accent-red-500" />
+      <div className="none accent-green-500" />
     </fieldset>
   );
 };

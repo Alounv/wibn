@@ -21,7 +21,6 @@ export default function GroupsPage() {
       title="Groups"
       email={data.user.email}
       sidebar={<GroupsNavbar groups={data.groups} />}
-      color="bg-yellow-800"
     >
       <Outlet />
     </GeneralLayout>

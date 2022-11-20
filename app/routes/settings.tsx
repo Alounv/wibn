@@ -44,8 +44,9 @@ export default function UserPage() {
 
   return (
     <GeneralLayout
-      title="Settings"
+      title="User settings"
       email={user.email}
+      color="bg-sky-800"
       sidebar={
         <Link to="/groups" className="block p-4 text-xl text-blue-500">
           Go to groups
@@ -53,7 +54,7 @@ export default function UserPage() {
       }
     >
       <div className="flex flex-col gap-8">
-        <Title>Settings</Title>
+        <Title>User settings</Title>
         <UserEdition user={{ ...user, periods: periods as Periods[] }} />
         <Outlet />
       </div>

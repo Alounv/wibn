@@ -34,13 +34,13 @@ export async function loader({ request, params }: LoaderArgs) {
   });
 }
 
-export default function GroupDetailsPage() {
+export default function SettingsAvailabilities() {
   const { availabilities, start, end, previousWeek, nextWeek, currentWeek } =
     useLoaderData<typeof loader>();
 
-  const nextLink = `/settings/${nextWeek.year}/${nextWeek.week}`;
-  const previousLink = `/settings/${previousWeek.year}/${previousWeek.week}`;
-  const currentLink = `/settings/${currentWeek.year}/${currentWeek.week}`;
+  const nextLink = `./../../${nextWeek.year}/${nextWeek.week}`;
+  const previousLink = `./../../${previousWeek.year}/${previousWeek.week}`;
+  const currentLink = `./../../${currentWeek.year}/${currentWeek.week}`;
 
   return (
     <WeekNavigation
