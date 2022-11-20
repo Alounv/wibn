@@ -26,10 +26,12 @@ export default function GroupDetailsPage() {
   } = useLoaderData<typeof loader>();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col items-start gap-8">
       <Title>{name}</Title>
       <p>{description}</p>
       <PeriodsSelection key={id} isDisabled periods={periods} />
+
+      <LinkButton to={`current`}>See availabilities</LinkButton>
 
       <div>
         <p>Users:</p>

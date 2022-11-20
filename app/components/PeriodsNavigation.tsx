@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Title } from "./Title";
 
 interface IWeekNavigation {
@@ -21,7 +21,7 @@ export const WeekNavigation = ({
 }: IWeekNavigation) => {
   return (
     <div className="flex flex-col items-start gap-4">
-      <Title className="mb-4">Calendar based availabilities</Title>
+      <Title className="mb-4">Calendar availabilities</Title>
 
       <div className="font-bold">
         <Link to={previousLink}>⬅️</Link>
