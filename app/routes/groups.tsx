@@ -18,7 +18,8 @@ export default function GroupsPage() {
 
   return (
     <GeneralLayout
-      title="Groups"
+      title="👥 Groups"
+      color="bg-sky-800"
       email={data.user.email}
       sidebar={<GroupsNavbar groups={data.groups} />}
     >

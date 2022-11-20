@@ -44,12 +44,11 @@ export default function UserPage() {
 
   return (
     <GeneralLayout
-      title="User settings"
+      title="⚙️ User settings"
       email={user.email}
-      color="bg-sky-800"
       sidebar={
         <Link to="/groups" className="block p-4 text-xl text-blue-500">
-          Go to groups
+          👥 groups
         </Link>
       }
     >
