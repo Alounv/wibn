@@ -5,47 +5,57 @@ import type { Periods } from "~/utilities/periods";
 
 export type { Group } from "@prisma/client";
 
-export async function getGroup({
-  id,
-  adminId,
-}: Pick<Group, "id"> & {
-  adminId: User["id"];
-}): Promise<
+type GetGroupOutput = Promise<
   | (Pick<Group, "id" | "name" | "description"> & {
       periods: Periods[];
-      admin: User;
       users: User[];
+      admin: User;
     })
   | undefined
-> {
+>;
+
+async function getGroupByQuery({ query }: any): GetGroupOutput {
   const dbGroup = await prisma.group.findFirst({
     select: {
       id: true,
       description: true,
       name: true,
       periods: true,
+      users: true,
       admin: true,
-      users: {
-        select: {
-          user: true,
-        },
-      },
     },
-    where: { id, adminId },
+    where: query,
   });
 
   if (!dbGroup) return;
 
   return {
     ...dbGroup,
-    users: dbGroup.users.map(({ user }) => user),
     periods: (dbGroup?.periods.map(({ period }) => period) as Periods[]) || [],
   };
 }
 
+export async function getGroup({
+  id,
+  userId,
+}: Pick<Group, "id"> & {
+  userId: User["id"];
+}): GetGroupOutput {
+  return getGroupByQuery({ id, users: { some: { userId } } });
+}
+
+export async function getAdministeredGroup({
+  id,
+  adminId,
+}: Pick<Group, "id"> & {
+  adminId: User["id"];
+}): GetGroupOutput {
+  return getGroupByQuery({ id, adminId });
+}
+
 export function getGroupListItems({ adminId }: { adminId: User["id"] }) {
   return prisma.group.findMany({
-    where: { adminId },
+    //where: {adminId},
     select: { id: true, name: true },
     orderBy: { updatedAt: "desc" },
   });
@@ -64,34 +74,51 @@ export function createGroup({
     data: {
       name,
       description,
-      periods: {
-        connect: periods.map((p) => ({ period: p })),
-      },
-      admin: {
-        connect: {
-          id: adminId,
-        },
-      },
+      periods: { connect: periods.map((p) => ({ period: p })) },
+      admin: { connect: { id: adminId } },
+      users: { connect: { id: adminId } },
     },
   });
 }
 
-export function updateGroup({
+export async function updateGroup({
   id,
   description,
   periods,
   name,
+  emails,
+  adminEmail,
 }: Pick<Group, "description" | "name" | "id"> & {
   periods: string[];
+  emails: string[];
+  adminEmail: string | null;
 }) {
+  const existingUsers = await prisma.user.findMany({
+    where: { email: { in: emails } },
+    select: { id: true, email: true },
+  });
+
+  const setUsers = existingUsers.map(({ id }) => ({ id }));
+
+  const newEmails = emails.filter((email) => {
+    return !existingUsers.some((u) => u.email === email);
+  });
+
+  const createUsers = newEmails.map((email) => ({ email }));
+
+  console.log({ setUsers, createUsers });
+
   return prisma.group.update({
     where: { id },
     data: {
       name,
       description,
-      periods: {
-        set: periods.map((p) => ({ period: p })),
+      periods: { set: periods.map((p) => ({ period: p })) },
+      users: {
+        set: setUsers,
+        create: createUsers,
       },
+      ...(adminEmail && { admin: { connect: { email: adminEmail } } }),
     },
   });
 }

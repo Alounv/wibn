@@ -15,7 +15,13 @@ export async function action({ request }: ActionArgs) {
   const description = formData.get("description");
   const periods = formData.getAll("periods");
 
-  const { errors, data } = parseGroupFormData({ name, description, periods });
+  const { errors, data } = parseGroupFormData({
+    name,
+    description,
+    periods,
+    adminEmail: null,
+    emailsString: null,
+  });
   if (errors || !data) {
     return json({ errors }, { status: 400 });
   }

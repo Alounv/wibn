@@ -5,14 +5,17 @@ import invariant from "tiny-invariant";
 import GroupForm from "~/components/GroupForm";
 import { parseGroupFormData } from "~/components/GroupForm/parse";
 
-import { getGroup, updateGroup } from "~/models/group.server";
+import { getAdministeredGroup, updateGroup } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  const group = await getGroup({ adminId: user.id, id: params.groupId });
+  const group = await getAdministeredGroup({
+    adminId: user.id,
+    id: params.groupId,
+  });
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -25,12 +28,16 @@ export async function action({ request }: ActionArgs) {
   const description = formData.get("description");
   const id = formData.get("id");
   const periods = formData.getAll("periods");
+  const emailsString = formData.get("emails");
+  const adminEmail = formData.get("admin");
 
   const { errors, data } = parseGroupFormData({
     name,
     description,
     id,
     periods,
+    emailsString,
+    adminEmail,
   });
   if (errors || !data) {
     return json({ errors }, { status: 400 });

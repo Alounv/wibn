@@ -1,5 +1,5 @@
-import type { ForwardedRef } from "react";
-import { forwardRef } from "react";
+import type {ForwardedRef} from "react";
+import {forwardRef} from "react";
 
 interface ILabelledInput {
   label: string;
@@ -12,7 +12,7 @@ interface ILabelledInput {
 export const LabelledInput = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   ILabelledInput
->(({ label, error, name, value, rows }, ref) => {
+>(({label, error, name, value, rows}, ref) => {
   const commonProps = {
     name,
     defaultValue: value,

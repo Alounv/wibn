@@ -5,10 +5,14 @@ export interface GroupErrors {
   description?: string;
   id?: string;
   periods?: string;
+  emails?: string;
+  adminEmail?: string;
 }
 
 type GroupFormData = Pick<Group, "name" | "id" | "description"> & {
   periods: string[];
+  emails: string[];
+  adminEmail: string | null;
 };
 
 const emptyGroupFormErrors: GroupErrors = {
@@ -16,6 +20,8 @@ const emptyGroupFormErrors: GroupErrors = {
   description: undefined,
   id: undefined,
   periods: undefined,
+  emails: undefined,
+  adminEmail: undefined,
 };
 
 type ParseGroupFormDataFn = (args: {
@@ -24,10 +30,15 @@ type ParseGroupFormDataFn = (args: {
   periods: FormDataEntryValue[];
   id?: FormDataEntryValue | null;
   isIdRequired?: boolean;
+  emailsString: FormDataEntryValue | null;
+  adminEmail: FormDataEntryValue | null;
 }) => {
   errors?: GroupErrors;
   data?: GroupFormData;
 };
+
+const emailRegex =
+  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 export const parseGroupFormData: ParseGroupFormDataFn = ({
   name,
@@ -35,6 +46,8 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
   periods,
   id,
   isIdRequired = false,
+  emailsString,
+  adminEmail,
 }) => {
   let errors = emptyGroupFormErrors;
 
@@ -45,6 +58,17 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
 
   if (typeof description !== "string") {
     errors.description = "Description should be string";
+    return { errors };
+  }
+
+  if (!!emailsString && typeof emailsString !== "string") {
+    console.log("HELLLO");
+    errors.emails = "Emails should be string";
+    return { errors };
+  }
+
+  if (!!adminEmail && typeof adminEmail !== "string") {
+    errors.adminEmail = "Admin email should be string";
     return { errors };
   }
 
@@ -60,12 +84,23 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
     }
   }
 
+  const emails = emailsString?.split("\n").map((email) => email.trim()) || [];
+
+  const invalidEmails = emails.filter((e) => !e.match(emailRegex));
+  console.log(invalidEmails);
+  if (invalidEmails.length) {
+    errors.emails = `Invalid emails: ${invalidEmails.join(", ")}`;
+    return { errors };
+  }
+
   return {
     data: {
       name,
       description,
       periods: periods as string[],
       id: (id as string) || "",
+      emails,
+      adminEmail,
     },
   };
 };

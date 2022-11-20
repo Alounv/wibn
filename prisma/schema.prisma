@@ -17,8 +17,8 @@ model User {
 
   password    Password?
   token       Token?
-  groups      UsersOnGroups[]
-  adminGroups Group[]
+  groups      Group[]
+  adminGroups Group[]   @relation("admin")
 }
 
 model Password {
@@ -45,20 +45,10 @@ model Group {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  admin   User   @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  admin   User   @relation(name: "admin", fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   adminId String
 
-  users UsersOnGroups[]
-}
-
-model UsersOnGroups {
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId     String
-  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  groupId    String
-  assignedAt DateTime @default(now())
-
-  @@id([userId, groupId])
+  users User[]
 }
 
 model Period {

@@ -6,14 +6,17 @@ import { Button } from "~/components/Button";
 import { LinkButton } from "~/components/LinkButton";
 import { Title } from "~/components/Title";
 
-import { deleteGroup, getGroup } from "~/models/group.server";
+import { deleteGroup, getAdministeredGroup } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);
   invariant(params.groupId, "groupId not found");
 
-  const group = await getGroup({ adminId: user.id, id: params.groupId });
+  const group = await getAdministeredGroup({
+    adminId: user.id,
+    id: params.groupId,
+  });
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }
