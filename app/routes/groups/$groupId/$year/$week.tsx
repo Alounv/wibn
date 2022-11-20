@@ -2,6 +2,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import { Availabilities } from "~/components/Availabilities";
 import { LinkButton } from "~/components/LinkButton";
 import { WeekNavigation } from "~/components/PeriodsNavigation";
 import { getGroupAvailabilities } from "~/models/group.server";
@@ -62,7 +63,7 @@ export default function GroupDetailsPage() {
         start={start}
         end={end}
       >
-        {JSON.stringify(availabilities)}
+        <Availabilities availabilities={availabilities} />
       </WeekNavigation>
 
       <LinkButton to={`/groups/${groupId}`}>Back to Group</LinkButton>
