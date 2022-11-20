@@ -11,7 +11,10 @@ const getOauth2Client = async (
 ): Promise<OAuth2Client | undefined> => {
   const { refresh, access } = (await getUserToken(userId)) || {};
 
-  if (!refresh || !access) return;
+  if (!refresh || !access) {
+    console.error("No refresh or access token for user", userId);
+    return;
+  }
 
   const oauth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,

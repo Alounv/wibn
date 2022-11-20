@@ -28,6 +28,12 @@ const googleStrategy = new GoogleStrategy(
       "email https://www.googleapis.com/auth/calendar.freebusy https://www.googleapis.com/auth/calendar.readonly",
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
+    console.info({
+      accessToken: !!accessToken,
+      refreshToken: !!refreshToken,
+      extraParams: !!extraParams,
+      profile: !!profile,
+    });
     return getUserByEmailOrCreate({
       email: profile.emails[0].value,
       refreshToken,
