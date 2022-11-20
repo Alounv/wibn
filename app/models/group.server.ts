@@ -1,6 +1,7 @@
 import type { User, Group } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import { getGroupUsersAvailabilities } from "~/services/availabilities.server";
 import type { Periods } from "~/utilities/periods";
 
 export type { Group } from "@prisma/client";
@@ -53,9 +54,9 @@ export async function getAdministeredGroup({
   return getGroupByQuery({ id, adminId });
 }
 
-export function getGroupListItems({ adminId }: { adminId: User["id"] }) {
+export function listUserGroups({ userId }: { userId: User["id"] }) {
   return prisma.group.findMany({
-    //where: {adminId},
+    where: { users: { some: { id: userId } } },
     select: { id: true, name: true },
     orderBy: { updatedAt: "desc" },
   });
@@ -129,3 +130,38 @@ export function deleteGroup({
     where: { id, adminId },
   });
 }
+
+const getGroupUsersAndSlots = async (id: Group["id"]) => {
+  const groupWithUsers = await prisma.group.findFirst({
+    where: { id },
+    select: {
+      periods: true,
+      users: true,
+    },
+  });
+  const group = {
+    ...groupWithUsers,
+    periods: groupWithUsers?.periods.map(({ period }) => period) || [],
+    users: groupWithUsers?.users || [],
+  };
+  return group;
+};
+
+export const getGroupAvailabilities = async ({
+  groupId,
+  start,
+  end,
+}: {
+  groupId: Group["id"];
+  start: Date;
+  end: Date;
+}) => {
+  const group = await getGroupUsersAndSlots(groupId);
+
+  return getGroupUsersAvailabilities({
+    users: group.users,
+    possibilities: group.periods as Periods[],
+    start,
+    end,
+  });
+};

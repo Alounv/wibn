@@ -4,13 +4,13 @@ import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/LinkButton";
 import { WeekNavigation } from "~/components/PeriodsNavigation";
-import { PeriodsSelection } from "~/components/PeriodsSelection";
-import { getUserAvailabilities } from "~/services/availabilities.server";
+import { getGroupAvailabilities } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
 import { getFormattedDate, getWeeksData } from "~/utilities/dates.server";
 
 export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.groupId, "groupId not found");
+  const { groupId } = params;
+  invariant(groupId, "groupId not found");
   const { start, end, previousWeek, nextWeek, currentWeek } = getWeeksData({
     year: params.year,
     week: params.week,
@@ -21,10 +21,10 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const availabilities = await getUserAvailabilities({
+  const availabilities = await getGroupAvailabilities({
     start,
     end,
-    userId: user.id,
+    groupId,
   });
 
   return json({
@@ -34,7 +34,7 @@ export async function loader({ request, params }: LoaderArgs) {
     previousWeek,
     nextWeek,
     currentWeek,
-    groupId: params.groupId,
+    groupId,
   });
 }
 
@@ -62,7 +62,7 @@ export default function GroupDetailsPage() {
         start={start}
         end={end}
       >
-        <PeriodsSelection periods={availabilities} isDisabled />
+        {JSON.stringify(availabilities)}
       </WeekNavigation>
 
       <LinkButton to={`/groups/${groupId}`}>Back to Group</LinkButton>

@@ -1,3 +1,4 @@
+import type { User } from "~/models/user.server";
 import { getUserWithPeriods } from "~/models/user.server";
 import { getNewDateWithAddedHours } from "~/utilities/dates.server";
 import { Periods } from "../utilities/periods";
@@ -47,4 +48,47 @@ export const getUserAvailabilities = async ({
   });
   const { periods = [] } = (await getUserWithPeriods(userId)) || {};
   return eventsAvailabilities.filter((p) => !periods.includes(p));
+};
+
+interface IGetGroupAvailablities {
+  users: User[];
+  start: Readonly<Date>;
+  end: Readonly<Date>;
+  possibilities: Periods[];
+}
+
+export const getGroupUsersAvailabilities = async ({
+  users,
+  start,
+  end,
+  possibilities,
+}: IGetGroupAvailablities): Promise<Record<Periods, string[]>> => {
+  const usersAvailabilities = await Promise.all(
+    users.map(async ({ id: userId }) =>
+      getUserAvailabilities({ userId, start, end })
+    )
+  );
+
+  const usersWithAvailabilities = usersAvailabilities.map(
+    (availabilities, i) => ({
+      email: users[i].email,
+      availabilities,
+    })
+  );
+
+  const results = possibilities.reduce((acc, slot) => {
+    const availableUsers = usersWithAvailabilities.reduce(
+      (acc, { email, availabilities }) => {
+        if (availabilities.includes(slot)) {
+          acc.push(email);
+        }
+        return acc;
+      },
+      [] as string[]
+    );
+
+    return { ...acc, [slot]: availableUsers };
+  }, {} as Record<Periods, string[]>);
+
+  return results;
 };
