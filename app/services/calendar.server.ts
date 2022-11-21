@@ -40,44 +40,31 @@ const getCalendarsIds = async (
   return calendars.map((i) => i.id as string);
 };
 
-const getDateFromEventDate = (date: calendar_v3.Schema$EventDateTime): Date => {
-  const stringDate = date.dateTime || date.date;
-  invariant(stringDate, "date must be defined");
-  return new Date(stringDate);
-};
-
 const getCalendarEvents = async (
   calendar: calendar_v3.Calendar,
   calendarsIds: string[],
   start: Readonly<Date>,
   end: Readonly<Date>
-): Promise<calendar_v3.Schema$Event[]> => {
-  const promises = calendarsIds.map(async (calendarId) => {
-    const { data } = await calendar.events.list({
-      calendarId: calendarId as string,
-      timeMin: start.toISOString(),
-      timeMax: end.toISOString(),
-      timeZone: "Europe/Paris",
-    });
-    return data.items || [];
-  });
+): Promise<calendar_v3.Schema$TimePeriod[]> => {
+  const requestBody = {
+    items: calendarsIds.map((id) => ({ id })),
+    timeMin: start.toISOString(),
+    timeMax: end.toISOString(),
+    timeZone: "Europe/Paris",
+  };
+  const { data = {} } = await calendar.freebusy.query({ requestBody });
+  const calendars = Object.values(data.calendars || {});
 
-  const results = await Promise.all(promises);
-
-  return results.flat();
+  return calendars.flatMap((c) => c.busy || []);
 };
 
-const getEventsWithDates = (calendarEvents: calendar_v3.Schema$Event[]) => {
-  return calendarEvents
+const getEventsWithDates = (busyEvents: calendar_v3.Schema$TimePeriod[]) => {
+  return busyEvents
     .filter((e) => e.start && e.end)
-    .map((e) => {
-      return {
-        start: getDateFromEventDate(
-          e.start as calendar_v3.Schema$EventDateTime
-        ),
-        end: getDateFromEventDate(e.end as calendar_v3.Schema$EventDateTime),
-      };
-    });
+    .map((e) => ({
+      start: new Date(e.start as string),
+      end: new Date(e.end as string),
+    }));
 };
 
 interface IGetUserEventsFromAuth {

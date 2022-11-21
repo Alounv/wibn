@@ -25,7 +25,7 @@ const googleStrategy = new GoogleStrategy(
     includeGrantedScopes: true,
     accessType: "offline",
     scope:
-      "email https://www.googleapis.com/auth/calendar.freebusy https://www.googleapis.com/auth/calendar.readonly",
+      "email https://www.googleapis.com/auth/calendar.freebusy https://www.googleapis.com/auth/calendar.calendarlist.readonly",
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
     console.info({
