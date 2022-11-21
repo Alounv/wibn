@@ -1,6 +1,12 @@
+import type { Group } from "@prisma/client";
+import { getGroupAvailabilities } from "~/models/group.server";
 import type { User } from "~/models/user.server";
 import { getUserWithPeriods } from "~/models/user.server";
-import { getNewDateWithAddedHours } from "~/utilities/dates.server";
+import {
+  getNewDateWithAddedHours,
+  getWeek,
+  getWeekLimits,
+} from "~/utilities/dates.server";
 import { Periods } from "../utilities/periods";
 import { getUserEvents } from "./calendar.server";
 
@@ -98,4 +104,49 @@ export const getGroupUsersAvailabilities = async ({
   }, {} as Record<Periods, { email: string; error: string }[]>);
 
   return results;
+};
+
+const getBestTime = ({
+  possibilities,
+  availabilities,
+}: {
+  possibilities: Periods[];
+  availabilities: Record<Periods, { email: string }[]>;
+}) => {
+  return possibilities.reduce(
+    (acc, time) => {
+      const participants = availabilities[time].map((a) => a.email);
+      if (participants.length <= acc.participants.length) return acc;
+      return { time, participants };
+    },
+    { time: null, participants: [] } as {
+      time: Periods | null;
+      participants: string[];
+    }
+  );
+};
+
+const getBestTimeNextWeek = async (groupId: Group["id"]) => {
+  const now = new Date();
+  const inOneWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const { year, week } = getWeek(inOneWeek);
+  const { start, end } = getWeekLimits({ year, week });
+  const { possibilities, availabilities } = await getGroupAvailabilities({
+    groupId,
+    start,
+    end,
+  });
+
+  return getBestTime({ possibilities, availabilities });
+};
+
+export const getBestTimeForGroup = async (
+  groupId: Group["id"],
+  minParticipantsCount: number
+) => {
+  const { time, participants } = await getBestTimeNextWeek(groupId);
+
+  if (participants.length < minParticipantsCount || !time) return null;
+
+  return { time, participants };
 };

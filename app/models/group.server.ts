@@ -1,7 +1,10 @@
 import type { User, Group } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-import { getGroupUsersAvailabilities } from "~/services/availabilities.server";
+import {
+  getBestTimeForGroup,
+  getGroupUsersAvailabilities,
+} from "~/services/availabilities.server";
 import type { Periods } from "~/utilities/periods";
 
 export type { Group } from "@prisma/client";
@@ -171,4 +174,51 @@ export const getGroupAvailabilities = async ({
     availabilities,
     possibilities: group.periods as Periods[],
   };
+};
+
+export const getGroupsWithReminderToday = async () => {
+  const groups = await prisma.group.findMany({
+    where: { reminder: { not: null } }, // FIXME: add reminder date and check if one week before
+    select: {
+      id: true,
+      name: true,
+      minParticipantsCount: true,
+    },
+  });
+  return groups;
+};
+
+const postponeReminder = async (groupId: Group["id"]) => {
+  const now = new Date();
+  const inOneWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  await prisma.group.update({
+    where: { id: groupId },
+    data: { reminder: inOneWeek },
+  });
+};
+
+const sendReminder = async (
+  groupId: Group["id"],
+  result: { time: Periods; participants: string[] }
+) => {
+  console.log(
+    `Send following reminder for group ${groupId}: `,
+    `Time: ${result.time}`,
+    `Participants: ${result.participants.join(", ")}`
+  );
+};
+
+export const getBestTimeForGroupOrPostpone = async (
+  groupId: Group["id"],
+  minParticipantsCount: number
+) => {
+  const result = await getBestTimeForGroup(groupId, minParticipantsCount);
+
+  if (result) {
+    await sendReminder(groupId, result);
+    console.info(`Reminder set for group ${groupId}`);
+  } else {
+    await postponeReminder(groupId);
+    console.info(`Postpone reminder for group ${groupId}`);
+  }
 };

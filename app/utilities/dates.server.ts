@@ -1,7 +1,7 @@
 import invariant from "tiny-invariant";
 
 // https://weeknumber.com/how-to/javascript
-export const getWeek = (date: Date) => {
+export const getWeekNumber = (date: Date) => {
   date.setHours(0, 0, 0, 0);
   date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
   const week1 = new Date(date.getFullYear(), 0, 4);
@@ -40,11 +40,17 @@ export const getWeekLimits = ({
   return { start, end };
 };
 
+export const getWeek = (
+  date: Readonly<Date>
+): { week: number; year: number } => {
+  const year = date.getFullYear();
+  const week = getWeekNumber(date);
+  return { week, year };
+};
+
 export const getCurrentWeek = (): { week: number; year: number } => {
   const now = new Date();
-  const year = now.getFullYear();
-  const week = getWeek(now);
-  return { week, year };
+  return getWeek(now);
 };
 
 const locale = "fr-FR";

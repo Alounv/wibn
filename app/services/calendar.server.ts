@@ -1,7 +1,6 @@
 import type { OAuth2Client } from "google-auth-library";
 import type { calendar_v3 } from "googleapis";
 import { google } from "googleapis";
-import invariant from "tiny-invariant";
 import { getUserToken } from "~/models/user.server";
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ORIGIN } = process.env;
