@@ -89,7 +89,9 @@ export const getGroupUsersAvailabilities = async ({
     })
   );
 
-  const results = possibilities.reduce((acc, slot) => {
+  const disconnectedUsers = usersWithAvailabilities.filter((u) => !!u.error);
+
+  const availabilities = possibilities.reduce((acc, slot) => {
     const availableUsers = usersWithAvailabilities.reduce(
       (acc, { email, availabilities, error }) => {
         if (availabilities.includes(slot)) {
@@ -103,7 +105,7 @@ export const getGroupUsersAvailabilities = async ({
     return { ...acc, [slot]: availableUsers };
   }, {} as Record<Periods, { email: string; error: string }[]>);
 
-  return results;
+  return { availabilities, disconnectedUsers };
 };
 
 const getBestTime = ({

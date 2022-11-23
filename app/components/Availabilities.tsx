@@ -1,30 +1,19 @@
-import { useState } from "react";
 import type { Periods } from "~/utilities/periods";
 import { days, dayPeriods } from "~/utilities/periods";
 
 interface IAvailabilities {
   availabilities: Record<Periods, { email: string; error: string }[]>;
   possibilities: Periods[];
+  areDisconnectedVisible: boolean;
 }
 
 export const Availabilities = ({
   availabilities,
   possibilities,
+  areDisconnectedVisible,
 }: IAvailabilities) => {
-  const [areDisconnectedVisible, setAreDisconnectedVisible] = useState(false);
   return (
     <div className="flex flex-col gap-2">
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="connected"
-          name="connected"
-          value={areDisconnectedVisible.toString()}
-          onChange={() => setAreDisconnectedVisible(!areDisconnectedVisible)}
-        />
-        <span>Show members without google agenda</span>
-      </label>
-
       <div key="label" className="flex gap-3 uppercase">
         <div className="mr-3 w-16" />
 

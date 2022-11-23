@@ -163,14 +163,16 @@ export const getGroupAvailabilities = async ({
 }) => {
   const group = await getGroupUsersAndSlots(groupId);
 
-  const availabilities = await getGroupUsersAvailabilities({
-    users: group.users,
-    possibilities: group.periods as Periods[],
-    start,
-    end,
-  });
+  const { availabilities, disconnectedUsers } =
+    await getGroupUsersAvailabilities({
+      users: group.users,
+      possibilities: group.periods as Periods[],
+      start,
+      end,
+    });
 
   return {
+    disconnectedUsers,
     availabilities,
     possibilities: group.periods as Periods[],
   };

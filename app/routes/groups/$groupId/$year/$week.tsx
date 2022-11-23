@@ -1,8 +1,10 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
+import { useState } from "react";
 import invariant from "tiny-invariant";
 import { Availabilities } from "~/components/Availabilities";
+import { DisconnectedWarning } from "~/components/DisconnectedWarning";
 import { WeekNavigation } from "~/components/PeriodsNavigation";
 import { getGroupAvailabilities } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
@@ -21,15 +23,17 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const { availabilities, possibilities } = await getGroupAvailabilities({
-    start,
-    end,
-    groupId,
-  });
+  const { availabilities, possibilities, disconnectedUsers } =
+    await getGroupAvailabilities({
+      start,
+      end,
+      groupId,
+    });
 
   return json({
     availabilities,
     possibilities,
+    disconnectedUsers,
     start: getFormattedDate(start),
     end: getFormattedDate(end),
     previousWeek,
@@ -48,25 +52,42 @@ export default function GroupDetailsPage() {
     previousWeek,
     nextWeek,
     currentWeek,
+    disconnectedUsers,
   } = useLoaderData<typeof loader>();
 
   const nextLink = `./../../${nextWeek.year}/${nextWeek.week}`;
   const previousLink = `./../../${previousWeek.year}/${previousWeek.week}`;
   const currentLink = `./../../${currentWeek.year}/${currentWeek.week}`;
 
+  const hasDisconnectedUsers = disconnectedUsers.length > 0;
+  const [areDisconnectedVisible, setAreDisconnectedVisible] = useState(false);
+
   return (
-    <WeekNavigation
-      nextLink={nextLink}
-      previousLink={previousLink}
-      currentLink={currentLink}
-      start={start}
-      end={end}
-    >
-      <Availabilities
-        availabilities={availabilities}
-        possibilities={possibilities}
-      />
-    </WeekNavigation>
+    <>
+      {hasDisconnectedUsers && (
+        <>
+          <DisconnectedWarning
+            emails={disconnectedUsers.map((u) => u.email)}
+            areDisconnectedVisible={areDisconnectedVisible}
+            setAreDisconnectedVisible={setAreDisconnectedVisible}
+          />
+        </>
+      )}
+
+      <WeekNavigation
+        nextLink={nextLink}
+        previousLink={previousLink}
+        currentLink={currentLink}
+        start={start}
+        end={end}
+      >
+        <Availabilities
+          areDisconnectedVisible={areDisconnectedVisible}
+          availabilities={availabilities}
+          possibilities={possibilities}
+        />
+      </WeekNavigation>
+    </>
   );
 }
 

@@ -101,8 +101,10 @@ export const getUserEvents = async ({ userId, start, end }: IGetUserEvents) => {
       events: [],
     };
 
-  return {
-    error: "",
-    events: await getUserEventsFromAuth({ auth, start, end }),
-  };
+  try {
+    const events = await getUserEventsFromAuth({ auth, start, end });
+    return { error: "", events };
+  } catch (error) {
+    return { error: (error as Error).message, events: [] };
+  }
 };
