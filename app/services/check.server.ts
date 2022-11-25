@@ -1,10 +1,10 @@
 import {
-  getGroupsWithReminderToday,
+  getGroupsWithReminderNextWeek,
   getBestTimeForGroupOrPostpone,
 } from "~/models/group.server";
 
 export const checkGroupsForReminder = async () => {
-  const groups = await getGroupsWithReminderToday();
+  const groups = await getGroupsWithReminderNextWeek();
 
   await Promise.all(
     groups.map((g) =>

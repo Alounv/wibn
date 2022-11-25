@@ -178,9 +178,20 @@ export const getGroupAvailabilities = async ({
   };
 };
 
-export const getGroupsWithReminderToday = async () => {
+const getNextMonday = () => {
+  const d = new Date();
+  d.setDate(d.getDate() + ((1 + 7 - d.getDay()) % 7 || 7));
+  return d;
+};
+
+export const getGroupsWithReminderNextWeek = async () => {
+  const nextMonday = getNextMonday();
+  const followingMonday = new Date(
+    nextMonday.getTime() + 7 * 24 * 60 * 60 * 1000
+  );
+
   const groups = await prisma.group.findMany({
-    where: { reminder: { not: null } }, // FIXME: add reminder date and check if one week before
+    where: { reminder: { gte: nextMonday, lte: followingMonday } },
     select: {
       id: true,
       name: true,
