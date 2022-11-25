@@ -1,7 +1,7 @@
 import invariant from "tiny-invariant";
 
 // https://weeknumber.com/how-to/javascript
-export const getWeekNumber = (date: Date) => {
+const getWeekNumber = (date: Date) => {
   date.setHours(0, 0, 0, 0);
   date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
   const week1 = new Date(date.getFullYear(), 0, 4);
@@ -34,9 +34,17 @@ export const getWeekLimits = ({
   year: number;
 }): { start: Date; end: Date } => {
   const start = new Date(year, 0, 1 + (week - 1) * 7);
-  start.setDate(start.getDate() + (1 - start.getDay()));
+  const dayOfWeek = start.getDay();
+
+  if (dayOfWeek <= 4) {
+    start.setDate(start.getDate() - start.getDay() + 1);
+  } else {
+    start.setDate(start.getDate() + 8 - start.getDay());
+  }
+
   const end = new Date(start);
-  end.setDate(start.getDate() + 6);
+  end.setDate(start.getDate() + 7);
+
   return { start, end };
 };
 
@@ -45,7 +53,11 @@ export const getWeek = (
 ): { week: number; year: number } => {
   const year = date.getFullYear();
   const week = getWeekNumber(date);
-  return { week, year };
+
+  return {
+    week,
+    year: week === 54 && date.getMonth() === 11 ? year - 1 : year,
+  };
 };
 
 export const getCurrentWeek = (): { week: number; year: number } => {
@@ -79,11 +91,11 @@ export const getWeeksData = ({
 
   const { start, end } = getWeekLimits({ week, year });
 
-  const previousWeek =
-    week === 1 ? { week: 52, year: year - 1 } : { week: week - 1, year };
+  const nextWeekMiddle = getNewDateWithAddedHours(start, 24 * 3);
+  const nextWeek = getWeek(nextWeekMiddle);
 
-  const nextWeek =
-    week === 52 ? { week: 1, year: year + 1 } : { week: week + 1, year };
+  const previousWeekMiddle = getNewDateWithAddedHours(start, -24 * 3);
+  const previousWeek = getWeek(previousWeekMiddle);
 
   const currentWeek = getCurrentWeek();
   return {

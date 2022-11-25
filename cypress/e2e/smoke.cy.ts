@@ -46,9 +46,7 @@ describe("smoke tests", () => {
     });
     cy.findByRole("textbox", { name: /description/i }).type(
       testGroup.description,
-      {
-        force: true,
-      }
+      { force: true }
     );
     cy.findByRole("button", { name: /save/i }).click({ force: true });
 
