@@ -35,6 +35,16 @@ processes = []
     tls_skip_verify = false
     [services.http_checks.headers]
 
+  [[services.http_checks]]
+    grace_period = "5s"
+    interval = 604800000
+    method = "get"
+    path = "/remindercheck"
+    protocol = "http"
+    timeout = "20s"
+    tls_skip_verify = false
+    [services.http_checks.headers]
+
   [[services.ports]]
     force_https = true
     handlers = ["http"]
