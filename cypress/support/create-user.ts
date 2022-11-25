@@ -8,6 +8,8 @@ import { installGlobals } from "@remix-run/node";
 import { authenticator } from "~/services/auth.server";
 
 import { createUser } from "~/models/user.server";
+import { parse } from "cookie";
+import { commitSession, getSession } from "~/services/session.server";
 
 installGlobals();
 
@@ -21,12 +23,24 @@ async function createAndLogin(email: string) {
 
   const user = await createUser({ email, password: "myreallystrongpassword" });
 
-  const request = new Request("test://test");
+  let session = await getSession();
+  session.set(authenticator.sessionKey, user);
 
-  await authenticator.authenticate("user-pass", request, {
-    successRedirect: "/",
-    failureRedirect: "/",
-  });
+  let cookieValue = await commitSession(session);
+  if (!cookieValue) {
+    throw new Error("Cookie missing from createUserSession response");
+  }
+
+  const parsedCookie = parse(cookieValue);
+  // we log it like this so our cypress command can parse it out and set it as
+  // the cookie value.
+  console.log(
+    `
+<cookie>
+  ${parsedCookie.__session}
+</cookie>
+  `.trim()
+  );
 }
 
 createAndLogin(process.argv[2]);

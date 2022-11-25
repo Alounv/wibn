@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node";
+import { checkGroupsForReminder } from "~/services/check.server";
 
 export async function loader() {
   await checkGroupsForReminder();

@@ -25,3 +25,5 @@ export async function requireUser(
   });
   return user;
 }
+
+export let { getSession, commitSession } = sessionStorage;

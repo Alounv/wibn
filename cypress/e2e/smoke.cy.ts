@@ -15,6 +15,7 @@ describe("smoke tests", () => {
 
     cy.visitAndCheck("/");
 
+    cy.findByRole("link", { name: /login with email/i }).click();
     cy.findByRole("link", { name: /sign up/i }).click();
 
     cy.findByRole("textbox", { name: /email/i }).type(loginForm.email);
@@ -23,7 +24,7 @@ describe("smoke tests", () => {
 
     cy.findByRole("link", { name: /groups/i }).click();
     cy.findByRole("button", { name: /logout/i }).click();
-    cy.findByRole("link", { name: /log in/i });
+    cy.findByRole("link", { name: /login with email/i });
   });
 
   it("should allow you to make a group", () => {
@@ -38,7 +39,7 @@ describe("smoke tests", () => {
     cy.findByRole("link", { name: /groups/i }).click({ force: true });
     cy.findByText("No group yet");
 
-    cy.findByRole("link", { name: /create new group/i }).click();
+    cy.findByRole("link", { name: /create a new group/i }).click();
 
     cy.findByRole("textbox", { name: /name/i }).type(testGroup.name, {
       force: true,
