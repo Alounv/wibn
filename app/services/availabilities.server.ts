@@ -1,7 +1,7 @@
 import type { Group } from "@prisma/client";
 import { getGroupAvailabilities } from "~/models/group.server";
 import type { User } from "~/models/user.server";
-import { getUserWithPeriods } from "~/models/user.server";
+import { getUserWithPeriods } from "../models/user.server";
 import {
   getNewDateWithAddedHours,
   getWeek,
@@ -24,7 +24,7 @@ const getUserAvailabilitiesFromEvents = async ({
     const periodEnd = getNewDateWithAddedHours(periodStart, 8);
 
     const isAvailable = events.every(
-      (e) => e.start > periodEnd || e.end < periodStart
+      (e) => e.start >= periodEnd || e.end <= periodStart
     );
 
     return isAvailable;

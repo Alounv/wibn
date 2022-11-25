@@ -73,7 +73,6 @@ interface IGetUserEventsFromAuth {
 }
 
 const getUserEventsFromAuth = async ({
-  // FIXME: this function should be tested
   auth,
   start,
   end,
@@ -108,3 +107,5 @@ export const getUserEvents = async ({ userId, start, end }: IGetUserEvents) => {
     return { error: (error as Error).message, events: [] };
   }
 };
+
+// makes no sense to test this function as it is just a wrapper around google api. We will use e2e to check this.

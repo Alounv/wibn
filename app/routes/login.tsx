@@ -11,7 +11,6 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
-  console.log(request);
   const user = await authenticator.authenticate("user-pass", request, {
     successRedirect: "/groups",
   });
