@@ -10,7 +10,7 @@ import type { Periods } from "~/utilities/periods";
 export type { Group } from "@prisma/client";
 
 type GetGroupOutput = Promise<
-  | (Pick<Group, "id" | "name" | "description"> & {
+  | (Pick<Group, "id" | "name" | "description" | "reminder"> & {
       periods: Periods[];
       users: User[];
       admin: User;
@@ -29,6 +29,7 @@ async function getGroupByQuery(
       periods: true,
       users: true,
       admin: true,
+      reminder: true,
     },
     where: query,
   });
@@ -94,10 +95,12 @@ export async function updateGroup({
   name,
   emails,
   adminEmail,
+  reminder,
 }: Pick<Group, "description" | "name" | "id"> & {
   periods: string[];
   emails: string[];
   adminEmail: string | null;
+  reminder: string | null;
 }) {
   const existingUsers = await prisma.user.findMany({
     where: { email: { in: emails } },
@@ -117,6 +120,7 @@ export async function updateGroup({
     data: {
       name,
       description,
+      reminder: reminder ? new Date(reminder) : getNextMonday(),
       periods: { set: periods.map((p) => ({ period: p })) },
       users: {
         set: setUsers,
@@ -201,13 +205,21 @@ export const getGroupsWithReminderNextWeek = async () => {
   return groups;
 };
 
-const postponeReminder = async (groupId: Group["id"]) => {
-  const now = new Date();
-  const inOneWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-  await prisma.group.update({
+const postponeReminder = async (groupId: Group["id"], days: number) => {
+  const group = await prisma.group.findUnique({
     where: { id: groupId },
-    data: { reminder: inOneWeek },
+    select: { reminder: true },
   });
+  const reminder = group?.reminder;
+  if (reminder) {
+    const oneWeekLater = new Date(
+      reminder.getTime() + days * 24 * 60 * 60 * 1000
+    );
+    await prisma.group.update({
+      where: { id: groupId },
+      data: { reminder: oneWeekLater },
+    });
+  }
 };
 
 const sendReminder = async (
@@ -217,7 +229,7 @@ const sendReminder = async (
   console.log(
     `Send following reminder for group ${groupId}: `,
     `Time: ${result.time}`,
-    `Participants: ${result.participants.join(", ")}`
+    `Participants: ${result.participants.length}`
   );
 };
 
@@ -229,9 +241,10 @@ export const getBestTimeForGroupOrPostpone = async (
 
   if (result) {
     await sendReminder(groupId, result);
-    console.info(`Reminder set for group ${groupId}`);
+    console.info(`Reminder sent for group ${groupId} and postone one month`);
+    await postponeReminder(groupId, 30);
   } else {
-    await postponeReminder(groupId);
+    await postponeReminder(groupId, 7);
     console.info(`Postpone reminder for group ${groupId}`);
   }
 };

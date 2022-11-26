@@ -27,7 +27,7 @@ processes = []
 
   [[services.http_checks]]
     grace_period = "5s"
-    interval = "10s"
+    interval = "60s"
     method = "get"
     path = "/healthcheck"
     protocol = "http"
@@ -37,11 +37,11 @@ processes = []
 
   [[services.http_checks]]
     grace_period = "5s"
-    interval = 604800000
+    interval = "1000s"
     method = "get"
     path = "/remindercheck"
     protocol = "http"
-    timeout = "20s"
+    timeout = "10s"
     tls_skip_verify = false
     [services.http_checks.headers]
 

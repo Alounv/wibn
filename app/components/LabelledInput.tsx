@@ -1,5 +1,5 @@
-import type {ForwardedRef} from "react";
-import {forwardRef} from "react";
+import type { ForwardedRef } from "react";
+import { forwardRef } from "react";
 
 interface ILabelledInput {
   label: string;
@@ -7,12 +7,13 @@ interface ILabelledInput {
   value?: string;
   name: string;
   rows?: number;
+  type?: "date" | "text";
 }
 
 export const LabelledInput = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   ILabelledInput
->(({label, error, name, value, rows}, ref) => {
+>(({ label, error, name, value, rows, type = "text" }, ref) => {
   const commonProps = {
     name,
     defaultValue: value,
@@ -21,6 +22,8 @@ export const LabelledInput = forwardRef<
     className:
       "flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose",
   };
+
+  console.log(value, typeof value);
 
   return (
     <div>
@@ -33,7 +36,11 @@ export const LabelledInput = forwardRef<
             rows={rows}
           />
         ) : (
-          <input {...commonProps} ref={ref as ForwardedRef<HTMLInputElement>} />
+          <input
+            {...commonProps}
+            type={type}
+            ref={ref as ForwardedRef<HTMLInputElement>}
+          />
         )}
       </label>
       {error && (

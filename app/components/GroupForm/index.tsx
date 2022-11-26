@@ -15,15 +15,24 @@ interface IGroupEdition {
     periods: Periods[];
     users: Pick<User, "id" | "email">[];
     admin: Pick<User, "email">;
+    reminder: string | null;
   };
 }
 
 export default function GroupEdition({ errors, group }: IGroupEdition) {
-  const { name, description, periods = [], users = [], admin } = group || {};
+  const {
+    name,
+    description,
+    periods = [],
+    users = [],
+    admin,
+    reminder,
+  } = group || {};
   const nameRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const emailsRef = useRef<HTMLTextAreaElement>(null);
   const adminEmailRef = useRef<HTMLSelectElement>(null);
+  const reminderRef = useRef<HTMLInputElement>(null);
 
   const emails = users?.map((u) => u.email).join("\n") || "";
 
@@ -36,8 +45,13 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
       emailsRef.current?.focus();
     } else if (errors?.adminEmail) {
       adminEmailRef.current?.focus();
+    } else if (errors?.reminder) {
+      reminderRef.current?.focus();
     }
   }, [errors]);
+
+  const reminderDate = reminder ? new Date(reminder) : null;
+  const reminderDateValue = reminderDate?.toISOString().split("T")[0] || "";
 
   return (
     <Form
@@ -51,7 +65,6 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
         name="name"
         error={errors?.name}
       />
-
       <LabelledInput
         rows={4}
         label="Description"
@@ -60,7 +73,14 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
         name="description"
         error={errors?.description}
       />
-
+      <LabelledInput
+        type="date"
+        label="Next reminder date"
+        value={reminderDateValue}
+        ref={reminderRef}
+        name="reminder"
+        error={errors?.reminder}
+      />
       <PeriodsSelection
         periods={periods}
         areAllSelected={!group}
@@ -68,9 +88,7 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
       >
         Select possible times for the group to meet.
       </PeriodsSelection>
-
       <input type="hidden" name="id" value={group?.id} />
-
       {group && (
         <>
           <LabelledInput
@@ -103,7 +121,6 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
           />
         </>
       )}
-
       <div className="text-right">
         <Button type="submit">Save</Button>
       </div>

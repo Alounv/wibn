@@ -7,12 +7,14 @@ export interface GroupErrors {
   periods?: string;
   emails?: string;
   adminEmail?: string;
+  reminder?: string;
 }
 
 type GroupFormData = Pick<Group, "name" | "id" | "description"> & {
   periods: string[];
   emails: string[];
   adminEmail: string | null;
+  reminder: string | null;
 };
 
 const emptyGroupFormErrors: GroupErrors = {
@@ -22,6 +24,7 @@ const emptyGroupFormErrors: GroupErrors = {
   periods: undefined,
   emails: undefined,
   adminEmail: undefined,
+  reminder: undefined,
 };
 
 type ParseGroupFormDataFn = (args: {
@@ -32,6 +35,7 @@ type ParseGroupFormDataFn = (args: {
   isIdRequired?: boolean;
   emailsString: FormDataEntryValue | null;
   adminEmail: FormDataEntryValue | null;
+  reminder: FormDataEntryValue | null;
 }) => {
   errors?: GroupErrors;
   data?: GroupFormData;
@@ -48,6 +52,7 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
   isIdRequired = false,
   emailsString,
   adminEmail,
+  reminder,
 }) => {
   let errors = emptyGroupFormErrors;
 
@@ -83,6 +88,11 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
     }
   }
 
+  if (!!reminder && typeof reminder !== "string") {
+    errors.adminEmail = "Next reminder should be string";
+    return { errors };
+  }
+
   const emails = emailsString?.split("\n").map((email) => email.trim()) || [];
 
   const invalidEmails = emails.filter((e) => !e.match(emailRegex));
@@ -99,6 +109,7 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
       id: (id as string) || "",
       emails,
       adminEmail,
+      reminder,
     },
   };
 };

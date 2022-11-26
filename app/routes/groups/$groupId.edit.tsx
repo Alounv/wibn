@@ -30,6 +30,7 @@ export async function action({ request }: ActionArgs) {
   const periods = formData.getAll("periods");
   const emailsString = formData.get("emails");
   const adminEmail = formData.get("admin");
+  const reminder = formData.get("reminder");
 
   const { errors, data } = parseGroupFormData({
     name,
@@ -38,6 +39,7 @@ export async function action({ request }: ActionArgs) {
     periods,
     emailsString,
     adminEmail,
+    reminder,
   });
   if (errors || !data) {
     return json({ errors }, { status: 400 });
