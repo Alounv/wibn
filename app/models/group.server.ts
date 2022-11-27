@@ -224,7 +224,7 @@ export const getGroupsWithReminderNextWeek = async () => {
   return groups;
 };
 
-const postponeReminder = async ({
+export const postponeReminder = async ({
   id,
   reminder,
   days,
@@ -237,38 +237,5 @@ const postponeReminder = async ({
       where: { id },
       data: { reminder: oneWeekLater },
     });
-  }
-};
-
-const sendReminder = async (
-  groupId: Group["id"],
-  result: { time: Periods; participants: string[] }
-) => {
-  console.log(
-    `Send following reminder for group ${groupId}: `,
-    `Time: ${result.time}`,
-    `Participants: ${result.participants.length}`
-  );
-};
-
-export const getBestTimeForGroupOrPostpone = async ({
-  id,
-  name,
-  minParticipantsCount,
-  periodicity,
-  reminder,
-}: Pick<
-  Group,
-  "id" | "name" | "minParticipantsCount" | "periodicity" | "reminder"
->) => {
-  const result = await getBestTimeForGroup(id, minParticipantsCount);
-
-  if (result) {
-    await sendReminder(id, result);
-    await postponeReminder({ id, days: periodicity, reminder });
-    console.info(`Reminder sent for group ${name} and postone one month`);
-  } else {
-    await postponeReminder({ id, days: 7, reminder });
-    console.info(`Postpone reminder for group ${name}`);
   }
 };
