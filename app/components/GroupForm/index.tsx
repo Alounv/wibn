@@ -93,15 +93,17 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
         name="reminder"
         error={errors?.reminder}
       />
-      <LabelledNumberInput
-        label="Minimun number of participants"
-        value={minParticipantsCount || 2}
-        min={1}
-        max={users?.length}
-        ref={minParticipantsCountRef}
-        name="minParticipantsCount"
-        error={errors?.minParticipantsCount}
-      />
+      {group && (
+        <LabelledNumberInput
+          label="Minimun number of participants"
+          value={minParticipantsCount || 2}
+          min={1}
+          max={users?.length}
+          ref={minParticipantsCountRef}
+          name="minParticipantsCount"
+          error={errors?.minParticipantsCount}
+        />
+      )}
       <LabelledNumberInput
         label="Periodicity (in days)"
         value={periodicity || 30}

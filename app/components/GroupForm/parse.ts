@@ -12,7 +12,10 @@ export interface GroupErrors {
   periodicity?: string;
 }
 
-type GroupFormData = Pick<Group, "name" | "id" | "description"> & {
+type GroupFormData = Pick<
+  Group,
+  "name" | "id" | "description" | "minParticipantsCount" | "periodicity"
+> & {
   periods: string[];
   emails: string[];
   adminEmail: string | null;

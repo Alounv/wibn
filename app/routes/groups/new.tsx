@@ -15,6 +15,8 @@ export async function action({ request }: ActionArgs) {
   const description = formData.get("description");
   const periods = formData.getAll("periods");
   const reminder = formData.get("reminder");
+  const periodicity = formData.get("periodicity");
+  const minParticipantsCount = formData.get("minParticipantsCount");
 
   const { errors, data } = parseGroupFormData({
     name,
@@ -23,6 +25,8 @@ export async function action({ request }: ActionArgs) {
     adminEmail: null,
     emailsString: null,
     reminder,
+    periodicity,
+    minParticipantsCount,
   });
   if (errors || !data) {
     return json({ errors }, { status: 400 });
