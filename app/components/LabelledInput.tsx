@@ -4,10 +4,10 @@ import { forwardRef } from "react";
 interface ILabelledInput {
   label: string;
   error: string | null | undefined;
-  value?: string;
+  value?: string | number;
   name: string;
   rows?: number;
-  type?: "date" | "text";
+  type?: "date" | "text" | "number";
 }
 
 export const LabelledInput = forwardRef<
@@ -22,8 +22,6 @@ export const LabelledInput = forwardRef<
     className:
       "flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose",
   };
-
-  console.log(value, typeof value);
 
   return (
     <div>

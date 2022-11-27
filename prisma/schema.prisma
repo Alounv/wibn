@@ -41,7 +41,8 @@ model Group {
   name        String
   description String
   periods     Period[]
-  minParticipantsCount Int @default(1)
+  minParticipantsCount Int @default(2)
+  periodicity Int @default(30)
   reminder    DateTime?
 
   createdAt DateTime @default(now())

@@ -10,7 +10,15 @@ import type { Periods } from "~/utilities/periods";
 export type { Group } from "@prisma/client";
 
 type GetGroupOutput = Promise<
-  | (Pick<Group, "id" | "name" | "description" | "reminder"> & {
+  | (Pick<
+      Group,
+      | "id"
+      | "name"
+      | "description"
+      | "reminder"
+      | "minParticipantsCount"
+      | "periodicity"
+    > & {
       periods: Periods[];
       users: User[];
       admin: User;
@@ -30,6 +38,8 @@ async function getGroupByQuery(
       users: true,
       admin: true,
       reminder: true,
+      minParticipantsCount: true,
+      periodicity: true,
     },
     where: query,
   });
@@ -96,7 +106,12 @@ export async function updateGroup({
   emails,
   adminEmail,
   reminder,
-}: Pick<Group, "description" | "name" | "id"> & {
+  periodicity,
+  minParticipantsCount,
+}: Pick<
+  Group,
+  "description" | "name" | "id" | "periodicity" | "minParticipantsCount"
+> & {
   periods: string[];
   emails: string[];
   adminEmail: string | null;
@@ -122,6 +137,8 @@ export async function updateGroup({
       description,
       reminder: reminder ? new Date(reminder) : getNextMonday(),
       periods: { set: periods.map((p) => ({ period: p })) },
+      periodicity,
+      minParticipantsCount,
       users: {
         set: setUsers,
         create: createUsers,
@@ -200,23 +217,24 @@ export const getGroupsWithReminderNextWeek = async () => {
       id: true,
       name: true,
       minParticipantsCount: true,
+      periodicity: true,
+      reminder: true,
     },
   });
   return groups;
 };
 
-const postponeReminder = async (groupId: Group["id"], days: number) => {
-  const group = await prisma.group.findUnique({
-    where: { id: groupId },
-    select: { reminder: true },
-  });
-  const reminder = group?.reminder;
+const postponeReminder = async ({
+  id,
+  reminder,
+  days,
+}: Pick<Group, "id" | "reminder"> & { days: number }) => {
   if (reminder) {
     const oneWeekLater = new Date(
       reminder.getTime() + days * 24 * 60 * 60 * 1000
     );
     await prisma.group.update({
-      where: { id: groupId },
+      where: { id },
       data: { reminder: oneWeekLater },
     });
   }
@@ -233,18 +251,24 @@ const sendReminder = async (
   );
 };
 
-export const getBestTimeForGroupOrPostpone = async (
-  groupId: Group["id"],
-  minParticipantsCount: number
-) => {
-  const result = await getBestTimeForGroup(groupId, minParticipantsCount);
+export const getBestTimeForGroupOrPostpone = async ({
+  id,
+  name,
+  minParticipantsCount,
+  periodicity,
+  reminder,
+}: Pick<
+  Group,
+  "id" | "name" | "minParticipantsCount" | "periodicity" | "reminder"
+>) => {
+  const result = await getBestTimeForGroup(id, minParticipantsCount);
 
   if (result) {
-    await sendReminder(groupId, result);
-    console.info(`Reminder sent for group ${groupId} and postone one month`);
-    await postponeReminder(groupId, 30);
+    await sendReminder(id, result);
+    await postponeReminder({ id, days: periodicity, reminder });
+    console.info(`Reminder sent for group ${name} and postone one month`);
   } else {
-    await postponeReminder(groupId, 7);
-    console.info(`Postpone reminder for group ${groupId}`);
+    await postponeReminder({ id, days: 7, reminder });
+    console.info(`Postpone reminder for group ${name}`);
   }
 };

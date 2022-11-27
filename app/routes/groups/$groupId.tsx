@@ -26,7 +26,14 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export default function GroupDetailsPage() {
   const {
-    group: { name, description, users, admin },
+    group: {
+      name,
+      description,
+      users,
+      admin,
+      minParticipantsCount,
+      periodicity,
+    },
     reminderDate,
     isAdmin,
   } = useLoaderData<typeof loader>();
@@ -50,8 +57,19 @@ export default function GroupDetailsPage() {
       </div>
 
       <div>
-        Reminder will be sent the week before the{" "}
-        <strong>{reminderDate}</strong>
+        <span>
+          A reminder will be sent the week before the{" "}
+          <strong>{reminderDate}</strong> if at least{" "}
+          <strong>{minParticipantsCount} participants</strong> are available.{" "}
+        </span>
+        <span>
+          If not, the group will try to send the reminder the following week,
+          etc.
+        </span>
+        <span>
+          In case of success, the next reminder will be set{" "}
+          <strong>{periodicity} days</strong> later.
+        </span>
       </div>
 
       {isAdmin && (

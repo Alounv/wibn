@@ -8,6 +8,8 @@ export interface GroupErrors {
   emails?: string;
   adminEmail?: string;
   reminder?: string;
+  minParticipantsCount?: string;
+  periodicity?: string;
 }
 
 type GroupFormData = Pick<Group, "name" | "id" | "description"> & {
@@ -25,6 +27,8 @@ const emptyGroupFormErrors: GroupErrors = {
   emails: undefined,
   adminEmail: undefined,
   reminder: undefined,
+  minParticipantsCount: undefined,
+  periodicity: undefined,
 };
 
 type ParseGroupFormDataFn = (args: {
@@ -36,6 +40,8 @@ type ParseGroupFormDataFn = (args: {
   emailsString: FormDataEntryValue | null;
   adminEmail: FormDataEntryValue | null;
   reminder: FormDataEntryValue | null;
+  minParticipantsCount: FormDataEntryValue | null;
+  periodicity: FormDataEntryValue | null;
 }) => {
   errors?: GroupErrors;
   data?: GroupFormData;
@@ -53,6 +59,8 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
   emailsString,
   adminEmail,
   reminder,
+  minParticipantsCount,
+  periodicity,
 }) => {
   let errors = emptyGroupFormErrors;
 
@@ -93,6 +101,21 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
     return { errors };
   }
 
+  const minParticipantsCountNumber = Number(minParticipantsCount);
+  if (
+    !!minParticipantsCount &&
+    typeof minParticipantsCountNumber !== "number"
+  ) {
+    errors.minParticipantsCount = "Min participants count should be number";
+    return { errors };
+  }
+
+  const periodicityNumber = Number(periodicity);
+  if (!!periodicity && typeof periodicityNumber !== "number") {
+    errors.periodicity = "Periodicity in days should be number";
+    return { errors };
+  }
+
   const emails = emailsString?.split("\n").map((email) => email.trim()) || [];
 
   const invalidEmails = emails.filter((e) => !e.match(emailRegex));
@@ -110,6 +133,8 @@ export const parseGroupFormData: ParseGroupFormDataFn = ({
       emails,
       adminEmail,
       reminder,
+      minParticipantsCount: minParticipantsCountNumber,
+      periodicity: periodicityNumber,
     },
   };
 };

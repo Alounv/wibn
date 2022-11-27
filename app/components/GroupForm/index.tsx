@@ -5,13 +5,17 @@ import type { User } from "~/models/user.server";
 import type { Periods } from "~/utilities/periods";
 import { Button } from "../Button";
 import { LabelledInput } from "../LabelledInput";
+import { LabelledNumberInput } from "../LabelledNumberInput";
 import { LabelledSelect } from "../LabelledSelect";
 import { PeriodsSelection } from "../PeriodsSelection";
 import type { GroupErrors } from "./parse";
 
 interface IGroupEdition {
   errors?: GroupErrors;
-  group?: Pick<Group, "name" | "description" | "id"> & {
+  group?: Pick<
+    Group,
+    "name" | "description" | "id" | "minParticipantsCount" | "periodicity"
+  > & {
     periods: Periods[];
     users: Pick<User, "id" | "email">[];
     admin: Pick<User, "email">;
@@ -27,12 +31,16 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
     users = [],
     admin,
     reminder,
+    minParticipantsCount,
+    periodicity,
   } = group || {};
   const nameRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const emailsRef = useRef<HTMLTextAreaElement>(null);
   const adminEmailRef = useRef<HTMLSelectElement>(null);
   const reminderRef = useRef<HTMLInputElement>(null);
+  const minParticipantsCountRef = useRef<HTMLInputElement>(null);
+  const periodicityRef = useRef<HTMLInputElement>(null);
 
   const emails = users?.map((u) => u.email).join("\n") || "";
 
@@ -47,6 +55,10 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
       adminEmailRef.current?.focus();
     } else if (errors?.reminder) {
       reminderRef.current?.focus();
+    } else if (errors?.minParticipantsCount) {
+      minParticipantsCountRef.current?.focus();
+    } else if (errors?.periodicity) {
+      periodicityRef.current?.focus();
     }
   }, [errors]);
 
@@ -80,6 +92,25 @@ export default function GroupEdition({ errors, group }: IGroupEdition) {
         ref={reminderRef}
         name="reminder"
         error={errors?.reminder}
+      />
+      <LabelledNumberInput
+        label="Minimun number of participants"
+        value={minParticipantsCount || 2}
+        min={1}
+        max={users?.length}
+        ref={minParticipantsCountRef}
+        name="minParticipantsCount"
+        error={errors?.minParticipantsCount}
+      />
+      <LabelledNumberInput
+        label="Periodicity (in days)"
+        value={periodicity || 30}
+        min={15}
+        step={15}
+        max={360}
+        ref={periodicityRef}
+        name="periodicity"
+        error={errors?.periodicity}
       />
       <PeriodsSelection
         periods={periods}

@@ -11,9 +11,5 @@ export const checkGroupsForReminder = async () => {
       .join(", ")}`
   );
 
-  await Promise.all(
-    groups.map((g) =>
-      getBestTimeForGroupOrPostpone(g.id, g.minParticipantsCount)
-    )
-  );
+  await Promise.all(groups.map((g) => getBestTimeForGroupOrPostpone(g)));
 };
