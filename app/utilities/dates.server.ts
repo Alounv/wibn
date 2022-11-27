@@ -73,8 +73,9 @@ const format: Intl.DateTimeFormatOptions = {
   day: "numeric",
 };
 
-export const getFormattedDate = (date: Date): string =>
-  date.toLocaleDateString(locale, format);
+export const getFormattedDate = (date: Date | null): string => {
+  return date ? date.toLocaleDateString(locale, format) : "";
+};
 
 export const getWeeksData = ({
   year: stringYear,

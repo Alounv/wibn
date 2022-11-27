@@ -25,19 +25,19 @@ processes = []
     soft_limit = 20
     type = "connections"
 
-  [[services.http_checks]]
-    grace_period = "5s"
-    interval = "60s"
-    method = "get"
-    path = "/healthcheck"
-    protocol = "http"
-    timeout = "2s"
-    tls_skip_verify = false
-    [services.http_checks.headers]
+#  [[services.http_checks]]
+#    grace_period = "5s"
+#    interval = 60000
+#    method = "get"
+#    path = "/healthcheck"
+#    protocol = "http"
+#    timeout = "2s"
+#    tls_skip_verify = false
+#    [services.http_checks.headers]
 
   [[services.http_checks]]
     grace_period = "5s"
-    interval = "1000s"
+    interval = 1000000
     method = "get"
     path = "/remindercheck"
     protocol = "http"

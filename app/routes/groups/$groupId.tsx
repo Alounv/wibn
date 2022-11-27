@@ -6,6 +6,7 @@ import { LinkButton } from "~/components/LinkButton";
 import { Title } from "~/components/Title";
 import { getGroup } from "~/models/group.server";
 import { requireUser } from "~/services/session.server";
+import { getFormattedDate } from "~/utilities/dates.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const user = await requireUser(request);
@@ -16,12 +17,17 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return json({ group, isAdmin: user.id === group.admin.id });
+  return json({
+    group,
+    isAdmin: user.id === group.admin.id,
+    reminderDate: getFormattedDate(group.reminder),
+  });
 }
 
 export default function GroupDetailsPage() {
   const {
     group: { name, description, users, admin },
+    reminderDate,
     isAdmin,
   } = useLoaderData<typeof loader>();
 
@@ -41,6 +47,11 @@ export default function GroupDetailsPage() {
             </li>
           ))}
         </ul>
+      </div>
+
+      <div>
+        Reminder will be sent the week before the{" "}
+        <strong>{reminderDate}</strong>
       </div>
 
       {isAdmin && (
