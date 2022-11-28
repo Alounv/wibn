@@ -58,6 +58,8 @@ export const PeriodsSelection = ({
                 />
               );
             })}
+
+            <div className="text-gray-400">{dayPeriod.hours}</div>
           </div>
         );
       })}

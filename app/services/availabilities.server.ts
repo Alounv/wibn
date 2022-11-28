@@ -20,8 +20,22 @@ const getUserAvailabilitiesFromEvents = async ({
   events,
 }: IGetAvailablitiesFromEvents): Promise<Periods[]> => {
   return Object.values(Periods).filter((_, i) => {
-    const periodStart = getNewDateWithAddedHours(start, i * 8);
-    const periodEnd = getNewDateWithAddedHours(periodStart, 8);
+    const dayStart = getNewDateWithAddedHours(start, Math.floor(i / 3) * 24);
+
+    const periodStart = (() => {
+      switch (i % 3) {
+        case 0: // morning
+          return getNewDateWithAddedHours(dayStart, 8);
+        case 1: // afternoon
+          return getNewDateWithAddedHours(dayStart, 13);
+        case 2: // evening
+          return getNewDateWithAddedHours(dayStart, 18);
+        default:
+          throw new Error("Invalid period");
+      }
+    })();
+
+    const periodEnd = getNewDateWithAddedHours(periodStart, 5);
 
     const isAvailable = events.every(
       (e) => e.start >= periodEnd || e.end <= periodStart

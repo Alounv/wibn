@@ -75,6 +75,7 @@ export const Availabilities = ({
               areDisconnectedVisible={areDisconnectedVisible}
             />
           ))}
+          <div className="text-gray-400">{dayPeriod.hours}</div>
         </div>
       ))}
 

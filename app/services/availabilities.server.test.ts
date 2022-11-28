@@ -6,8 +6,12 @@ vi.mock("./calendar.server", () => ({
       return {
         events: [
           {
-            start: new Date("2022-12-20T00:00:00.000Z"),
-            end: new Date("2022-12-21T00:00:00.000Z"),
+            start: new Date("2022-12-20T10:00:00.000Z"),
+            end: new Date("2022-12-20T14:00:00.000Z"),
+          },
+          {
+            start: new Date("2022-12-22T19:00:00.000Z"),
+            end: new Date("2022-12-22T20:00:00.000Z"),
           },
         ],
       };
@@ -80,8 +84,11 @@ describe("availabilities", () => {
       expect(availabilities).toContainEqual("MO-E");
       expect(availabilities).not.toContainEqual("TU-M");
       expect(availabilities).not.toContainEqual("TU-A");
-      expect(availabilities).not.toContainEqual("TU-E");
       expect(availabilities).toContainEqual("WE-M");
+
+      expect(availabilities).toContainEqual("TH-M");
+      expect(availabilities).not.toContainEqual("TH-E");
+      expect(availabilities).toContainEqual("FR-M");
     });
   });
 });

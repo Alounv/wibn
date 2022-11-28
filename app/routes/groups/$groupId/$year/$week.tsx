@@ -35,7 +35,7 @@ export async function loader({ request, params }: LoaderArgs) {
     possibilities,
     disconnectedUsers,
     start: getFormattedDate(start),
-    end: getFormattedDate(end),
+    end: getFormattedDate(new Date(end.getTime() - 1)),
     previousWeek,
     nextWeek,
     currentWeek,

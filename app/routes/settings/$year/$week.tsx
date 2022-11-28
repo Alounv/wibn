@@ -28,7 +28,7 @@ export async function loader({ request, params }: LoaderArgs) {
     error,
     availabilities,
     start: getFormattedDate(start),
-    end: getFormattedDate(end),
+    end: getFormattedDate(new Date(end.getTime() - 1)),
     previousWeek,
     nextWeek,
     currentWeek,

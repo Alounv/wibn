@@ -1,6 +1,5 @@
 import { Link } from "@remix-run/react";
 import type { ReactNode } from "react";
-import { Title } from "./Title";
 
 interface IWeekNavigation {
   previousLink: string;

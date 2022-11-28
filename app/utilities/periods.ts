@@ -24,10 +24,10 @@ export const days: { label: string; id: D }[] = [
   { label: "Sunday", id: D.Sunday },
 ];
 
-export const dayPeriods: { label: string; id: P }[] = [
-  { label: "Morning", id: P.Morning },
-  { label: "Afternoon", id: P.Afternoon },
-  { label: "Evening", id: P.Evening },
+export const dayPeriods: { label: string; hours: string; id: P }[] = [
+  { label: "Morning", hours: "  8 h", id: P.Morning },
+  { label: "Afternoon", hours: "13 h", id: P.Afternoon },
+  { label: "Evening", hours: "18 h", id: P.Evening },
 ];
 
 export enum Periods {
