@@ -17,7 +17,8 @@ export default function UserEdition({ user }: IUserEdition) {
     <Form method="patch" className="flex w-full flex-col gap-4">
       <PeriodsSelection periods={periods} variant="red">
         <span>
-          Select times your are <strong>never</strong> available.
+          Select times your are <strong>never</strong> available (other
+          aviabilities will be deducted from your calendar).
         </span>
       </PeriodsSelection>
 

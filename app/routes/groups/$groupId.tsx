@@ -63,8 +63,7 @@ export default function GroupDetailsPage() {
           <strong>{minParticipantsCount} participants</strong> are available.{" "}
         </span>
         <span>
-          If not, the group will try to send the reminder the following week,
-          etc.
+          If not, the group will try to send the reminder the following week.{" "}
         </span>
         <span>
           In case of success, the next reminder will be set{" "}
