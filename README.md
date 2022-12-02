@@ -22,3 +22,16 @@ This is a personal project to learn:
 - Remix
 - Google API
 - Nodemailer
+
+## Env
+
+```
+DATABASE_URL="file:./data.db?connection_limit=1"
+SESSION_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+ORIGIN=
+EMAIL_SENDER_USERNAME="a.gmail.username.to.send.email"
+EMAIL_SENDER_PASSWORD="an.associated.gmail.password"
+TZ="Europe/Paris"
+```
