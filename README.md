@@ -35,4 +35,3 @@ EMAIL_SENDER_USERNAME="a.gmail.username.to.send.email"
 EMAIL_SENDER_PASSWORD="an.associated.gmail.password"
 TZ="Europe/Paris"
 ```
-![Pollution](https://github.com/Alounv/wibn/assets/34238160/2d972d86-8243-42e7-8d88-a7af6aed0899)
